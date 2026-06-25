@@ -56,6 +56,9 @@ echo %URL%
 echo(
 echo Press Ctrl+C in this window to stop the server.
 echo(
+echo Opening browser automatically...
+start "" "%URL%"
+echo(
 "%PYTHON_EXE%" %PYTHON_ARGS% -m http.server %PORT% --bind 127.0.0.1
 exit /b %ERRORLEVEL%
 
