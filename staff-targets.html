@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Branch Focus Targets | Mplus Banana</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body data-page="staff-targets">
+    <header class="app-header">
+      <a class="brand" href="index.html">Mplus Banana</a>
+      <nav class="top-nav" aria-label="Main navigation"></nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">Targets</p>
+          <h1>Branch focus-brand progress</h1>
+        </div>
+      </section>
+
+      <div class="notice neutral">
+        This page shows branch-level focus-brand target progress only. It is not true personal staff sales attribution.
+      </div>
+
+      <section class="filter-bar" aria-label="Target filters">
+        <label>Branch <select id="targetBranch"></select></label>
+        <label>Month <input id="targetMonth" type="month"></label>
+      </section>
+
+      <section class="metric-grid" id="targetCards" aria-label="Target progress"></section>
+    </main>
+
+    <script type="module" src="js/staff-targets.js"></script>
+  </body>
+</html>

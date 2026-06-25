@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | Mplus Banana</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body data-page="dashboard">
+    <header class="app-header">
+      <a class="brand" href="index.html">Mplus Banana</a>
+      <nav class="top-nav" aria-label="Main navigation"></nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">Dashboard</p>
+          <h1>Sales summary</h1>
+        </div>
+        <button class="button" id="refreshData" type="button">Refresh CSV</button>
+      </section>
+
+      <section class="filter-bar" aria-label="Dashboard filters">
+        <label>Branch <select id="branchFilter"></select></label>
+        <label>Period <input id="periodFilter" type="month"></label>
+        <label>Channel
+          <select id="channelFilter">
+            <option value="all">All sales</option>
+            <option value="system">System sales</option>
+            <option value="outside">Outside-system sales</option>
+          </select>
+        </label>
+      </section>
+
+      <div id="dataStatus" class="notice neutral"></div>
+
+      <div class="notice warn">
+        Prototype sample data only - not real CSV data unless a configured Published CSV loads successfully.
+      </div>
+
+      <section class="metric-grid" id="dashboardCards" aria-label="Sales metrics"></section>
+
+      <section class="two-column">
+        <article class="panel">
+          <h2>Sales trend</h2>
+          <canvas id="salesTrendChart" height="220"></canvas>
+        </article>
+        <article class="panel">
+          <h2>Sales mix</h2>
+          <canvas id="salesMixChart" height="220"></canvas>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="js/dashboard.js"></script>
+  </body>
+</html>

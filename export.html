@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Copy Summary | Mplus Banana</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body data-page="export">
+    <header class="app-header">
+      <a class="brand" href="index.html">Mplus Banana</a>
+      <nav class="top-nav" aria-label="Main navigation"></nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">Copy Summary</p>
+          <h1>Copy Summary only</h1>
+        </div>
+      </section>
+
+      <div class="notice warn">
+        Prototype sample data only - not real CSV data. This page creates copyable text only and does not export PDF or Excel files.
+      </div>
+
+      <section class="filter-bar" aria-label="Summary format">
+        <label>Format
+          <select id="summaryFormat">
+            <option value="short">Short</option>
+            <option value="formal">Formal</option>
+            <option value="line">LINE</option>
+            <option value="owner">Owner summary</option>
+          </select>
+        </label>
+        <button class="button" id="copySummary" type="button">Copy</button>
+      </section>
+
+      <section class="panel">
+        <h2>Summary preview</h2>
+        <textarea id="summaryText" rows="12" readonly></textarea>
+      </section>
+    </main>
+
+    <script type="module" src="js/export.js"></script>
+  </body>
+</html>

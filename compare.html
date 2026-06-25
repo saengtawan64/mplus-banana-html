@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Compare | Mplus Banana</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body data-page="compare">
+    <header class="app-header">
+      <a class="brand" href="index.html">Mplus Banana</a>
+      <nav class="top-nav" aria-label="Main navigation"></nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">Compare</p>
+          <h1>Sales comparison</h1>
+        </div>
+      </section>
+
+      <section class="filter-bar" aria-label="Comparison controls">
+        <label>Compare by
+          <select id="compareDimension">
+            <option value="branch">Branch</option>
+            <option value="month">Month</option>
+            <option value="category">Category</option>
+            <option value="channel">Channel</option>
+          </select>
+        </label>
+        <label>Chart
+          <select id="chartType">
+            <option value="bar">Bar</option>
+            <option value="line">Line</option>
+            <option value="doughnut">Doughnut</option>
+            <option value="stackedBar">Stacked bar</option>
+          </select>
+        </label>
+        <label>Metric
+          <select id="compareMetric">
+            <option value="totalSales">Total sales</option>
+            <option value="systemSales">System sales</option>
+            <option value="outsideSystemSales">Outside-system sales</option>
+            <option value="deviceCount">Device count</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="panel">
+        <h2>Comparison chart</h2>
+        <canvas id="compareChart" height="260"></canvas>
+      </section>
+    </main>
+
+    <script type="module" src="js/compare.js"></script>
+  </body>
+</html>

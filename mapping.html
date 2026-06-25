@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSV Mapping | Mplus Banana</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body data-page="mapping">
+    <header class="app-header">
+      <a class="brand" href="index.html">Mplus Banana</a>
+      <nav class="top-nav" aria-label="Main navigation"></nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">Mapping</p>
+          <h1>CSV header mapping</h1>
+        </div>
+      </section>
+
+      <div class="notice neutral">
+        Mapping uses detected CSV headers only. Fixed column positions are intentionally not used.
+      </div>
+
+      <section class="panel">
+        <h2>Detected mapping status</h2>
+        <div id="mappingStatus" class="list-stack"></div>
+      </section>
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

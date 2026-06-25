@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mplus Banana Quick HTML</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body data-page="home">
+    <header class="app-header">
+      <a class="brand" href="index.html">Mplus Banana</a>
+      <nav class="top-nav" aria-label="Main navigation"></nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="hero-panel">
+        <div>
+          <p class="eyebrow">HTML Quick Version</p>
+          <h1>Standalone sales dashboard prototype</h1>
+          <p class="hero-copy">A clean static project for CSV-based reporting, mapping checks, branch summaries, and copy-ready sales updates.</p>
+        </div>
+        <div class="login-panel" aria-label="Prototype access selector">
+          <p class="panel-note">Local prototype controls only. This is not real authentication or production permission enforcement.</p>
+          <label for="roleSelect">Prototype role</label>
+          <select id="roleSelect"></select>
+          <label for="branchSelect">Branch</label>
+          <select id="branchSelect"></select>
+          <a class="button primary" href="dashboard.html">Open dashboard</a>
+        </div>
+      </section>
+
+      <section class="status-grid" aria-label="Project constraints">
+        <article class="status-card">
+          <h2>Standalone</h2>
+          <p>No React, Vite, package file, Firebase writes, or old project dependency.</p>
+        </article>
+        <article class="status-card">
+          <h2>CSV first</h2>
+          <p>Published CSV is the sales source of truth. Mapping is based on headers.</p>
+        </article>
+        <article class="status-card">
+          <h2>Role safe</h2>
+          <p>Display labels map back to CREATOR, OWNER, ADMIN, STAFF, or VIEWER.</p>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
