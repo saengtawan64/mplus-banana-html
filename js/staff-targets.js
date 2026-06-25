@@ -29,7 +29,7 @@ function renderTargets() {
     ["แบรนด์โฟกัส", target.brands.join(" + "), "กลุ่มแบรนด์ระดับสาขา", "gray", null],
     ["ความคืบหน้ายอดขาย", `${formatMoney(branchFocusActual.sales)} / ${formatMoney(target.targetSales)}`, "ยอดแบรนด์โฟกัสระดับสาขา", salesStatus, salesPercent],
     ["ความคืบหน้าจำนวนเครื่อง", `${branchFocusActual.devices} / ${target.targetDevices}`, "จำนวนเครื่องแบรนด์โฟกัสระดับสาขา", deviceStatus, devicePercent],
-    ["การนับยอด", "ระดับสาขาเท่านั้น", "ไม่ใช่ยอดขายรายบุคคล", "gray", null],
+    ["การนับยอด", "ระดับสาขาเท่านั้น", "ระดับสาขาเท่านั้น ไม่ใช้คำนวณรายบุคคล", "gray", null],
   ];
 
   document.querySelector("#targetCards").innerHTML = cards

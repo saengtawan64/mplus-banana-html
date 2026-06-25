@@ -13,7 +13,7 @@ function renderReports() {
     .map((row) => {
       const metric = calculateSales(row);
       if (metric.status === "missing") {
-        return `<tr class="missing-row"><td colspan="7">ข้อมูลหายหรือยังไม่ได้จับคู่หัวคอลัมน์ ข้อมูลนี้ไม่ถือว่าเป็นค่า 0</td></tr>`;
+        return `<tr class="missing-row"><td colspan="7">ไม่พบข้อมูลแถวนี้ หรือยังจับคู่หัวคอลัมน์ไม่ครบ — ไม่ใช่ค่า 0</td></tr>`;
       }
       return `<tr>
         <td>${row.date}</td>
@@ -21,7 +21,7 @@ function renderReports() {
         <td class="amount-cell">${formatMoney(metric.totalSales)}</td>
         <td class="amount-cell">${formatMoney(metric.systemSales.value)}</td>
         <td class="amount-cell">${formatMoney(metric.outsideSystemSales.value)}</td>
-        <td>ยอดจัด ${formatMoney(metric.financeAmount.value)} / สัญญา ${metric.contractCount.value}</td>
+        <td>ประกอบ: ยอดจัด ${formatMoney(metric.financeAmount.value)} / สัญญา ${metric.contractCount.value}</td>
         <td><span class="pill yellow">ข้อมูลตัวอย่าง</span></td>
       </tr>`;
     })
