@@ -39,6 +39,26 @@ Finance amount, contract count, profit, and other supporting metrics are shown s
 - Missing row, unavailable CSV, or unmapped field = missing/not found.
 - Existing row with numeric value `0` = valid zero value.
 
-## Running Locally
+## How To Open Locally
 
-Open `index.html` directly in a browser, or serve this folder with any static file server.
+Do not double-click `index.html` or open it through a direct `file://` path. This project uses browser ES module imports, so direct file opening is not supported or reliable.
+
+Open the site through a local static server from the project folder:
+
+```powershell
+python -m http.server 8765
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8765/index.html
+```
+
+On Windows, you can also run:
+
+```text
+start-local-server.bat
+```
+
+Cloudflare Pages or another static hosting service is also valid later.
