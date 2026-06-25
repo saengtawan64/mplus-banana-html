@@ -13,6 +13,17 @@
     </header>
 
     <main class="page-shell">
+      <section class="topbar-card" aria-label="Copy Summary context">
+        <div>
+          <h2>Share-ready text</h2>
+          <p class="panel-kicker">Copyable summary only. No PDF or Excel export is generated.</p>
+        </div>
+        <div class="topbar-meta">
+          <a class="button" href="dashboard.html">Dashboard</a>
+          <a class="button" href="reports.html">Reports</a>
+        </div>
+      </section>
+
       <section class="page-heading">
         <div>
           <p class="eyebrow">Copy Summary</p>
@@ -25,26 +36,30 @@
         Prototype sample data only - not real CSV data. This page creates copyable text only and does not export PDF or Excel files.
       </div>
 
-      <section class="filter-bar" aria-label="Summary format">
-        <label>Format
-          <select id="summaryFormat">
-            <option value="short">Short</option>
-            <option value="formal">Formal</option>
-            <option value="line">LINE</option>
-            <option value="owner">Owner summary</option>
-          </select>
-        </label>
-        <button class="button primary copy-action" id="copySummary" type="button">Copy Summary</button>
-      </section>
-
-      <section class="panel summary-preview">
-        <div class="panel-header">
-          <div>
-            <h2>Summary preview</h2>
-            <p class="panel-kicker">Copyable text only. Sample numbers are not real CSV data.</p>
-          </div>
+      <section class="summary-layout">
+        <div class="summary-card">
+          <h2>Format</h2>
+          <p class="panel-kicker">Choose a text style, then copy the summary for chat or owner updates.</p>
+          <label>Summary format
+            <select id="summaryFormat">
+              <option value="short">Short</option>
+              <option value="formal">Formal</option>
+              <option value="line">LINE</option>
+              <option value="owner">Owner summary</option>
+            </select>
+          </label>
+          <button class="button primary copy-action" id="copySummary" type="button">Copy Summary</button>
         </div>
-        <textarea id="summaryText" rows="12" readonly></textarea>
+
+        <section class="panel summary-preview">
+          <div class="panel-header">
+            <div>
+              <h2>Summary preview</h2>
+              <p class="panel-kicker">Copyable text only. Sample numbers are not real CSV data.</p>
+            </div>
+          </div>
+          <textarea id="summaryText" rows="12" readonly></textarea>
+        </section>
       </section>
     </main>
 

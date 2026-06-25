@@ -13,16 +13,16 @@ function renderReports() {
     .map((row) => {
       const metric = calculateSales(row);
       if (metric.status === "missing") {
-        return `<tr><td colspan="7">Missing row or unmapped data. This is not treated as zero.</td></tr>`;
+        return `<tr class="missing-row"><td colspan="7">Missing row or unmapped data. This is not treated as zero.</td></tr>`;
       }
       return `<tr>
         <td>${row.date}</td>
         <td>${row.branch}</td>
-        <td>${formatMoney(metric.totalSales)}</td>
-        <td>${formatMoney(metric.systemSales.value)}</td>
-        <td>${formatMoney(metric.outsideSystemSales.value)}</td>
+        <td class="amount-cell">${formatMoney(metric.totalSales)}</td>
+        <td class="amount-cell">${formatMoney(metric.systemSales.value)}</td>
+        <td class="amount-cell">${formatMoney(metric.outsideSystemSales.value)}</td>
         <td>Finance ${formatMoney(metric.financeAmount.value)} / Contracts ${metric.contractCount.value}</td>
-        <td><span class="pill gray">Prototype sample</span></td>
+        <td><span class="pill yellow">Prototype sample</span></td>
       </tr>`;
     })
     .join("");

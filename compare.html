@@ -13,6 +13,17 @@
     </header>
 
     <main class="page-shell">
+      <section class="topbar-card" aria-label="Comparison context">
+        <div>
+          <h2>Sample comparison</h2>
+          <p class="panel-kicker">Chart view uses prototype sample data and keeps support metrics separate.</p>
+        </div>
+        <div class="topbar-meta">
+          <a class="button" href="dashboard.html">Dashboard</a>
+          <a class="button" href="reports.html">Reports</a>
+        </div>
+      </section>
+
       <section class="page-heading">
         <div>
           <p class="eyebrow">Compare</p>
@@ -58,6 +69,7 @@
         <div class="chart-frame">
           <canvas id="compareChart" height="260"></canvas>
         </div>
+        <p class="chart-note">If Chart.js is unavailable from CDN, the page should remain usable and the filters should stay visible.</p>
       </section>
     </main>
 

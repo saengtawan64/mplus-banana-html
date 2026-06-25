@@ -18,6 +18,11 @@
           <p class="eyebrow">HTML Quick Version</p>
           <h1>Standalone sales dashboard prototype</h1>
           <p class="hero-copy">A clean static project for CSV-based reporting, mapping checks, branch summaries, and copy-ready sales updates.</p>
+          <div class="hero-stat-grid" aria-label="Prototype status">
+            <div class="hero-stat"><strong>Static app</strong><span>No backend or build step</span></div>
+            <div class="hero-stat"><strong>CSV-ready</strong><span>Header mapping first</span></div>
+            <div class="hero-stat"><strong>Role-safe</strong><span>Approved role keys only</span></div>
+          </div>
           <div class="quick-actions">
             <a class="button primary" href="dashboard.html">Open dashboard</a>
             <a class="button" href="mapping.html">Review mapping</a>
@@ -46,6 +51,21 @@
           <h2>Role safe</h2>
           <p>Display labels map back to CREATOR, OWNER, ADMIN, STAFF, or VIEWER.</p>
         </article>
+      </section>
+
+      <section class="setup-grid" aria-label="Setup shortcuts">
+        <a class="setup-card" href="branches.html">
+          <h2>Branch setup</h2>
+          <span>Review Thai branch display names and active status.</span>
+        </a>
+        <a class="setup-card" href="compare.html">
+          <h2>Compare view</h2>
+          <span>Preview the sample comparison chart before real CSV data.</span>
+        </a>
+        <a class="setup-card" href="export.html">
+          <h2>Copy summary</h2>
+          <span>Prepare copyable text only, without PDF or Excel export.</span>
+        </a>
       </section>
     </main>
 

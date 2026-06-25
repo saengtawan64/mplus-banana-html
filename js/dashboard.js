@@ -15,13 +15,19 @@ const SAMPLE_DATA_LABEL = "Prototype sample data only - not real CSV data.";
 
 function renderCards(metric) {
   const cards = [
-    ["Total sales", metric.status === "ok" ? formatMoney(metric.totalSales) : "No data", "system + outside only"],
-    ["System sales", formatMoney(metric.systemSales?.value), "included in total"],
-    ["Outside-system sales", formatMoney(metric.outsideSystemSales?.value), "included in total"],
-    ["Supporting metrics", `${formatMoney(metric.financeAmount?.value)} / ${metric.contractCount?.value ?? "No data"}`, "not included in total"],
+    ["Total sales", metric.status === "ok" ? formatMoney(metric.totalSales) : "No data", "system + outside only", "featured", "yellow"],
+    ["System sales", formatMoney(metric.systemSales?.value), "included in total", "", "green"],
+    ["Outside-system sales", formatMoney(metric.outsideSystemSales?.value), "included in total", "", "yellow"],
+    ["Supporting metrics", `${formatMoney(metric.financeAmount?.value)} / ${metric.contractCount?.value ?? "No data"}`, "not included in total", "", "gray"],
   ];
   document.querySelector("#dashboardCards").innerHTML = cards
-    .map(([title, value, note]) => `<article class="metric-card"><p>${title}</p><strong>${value}</strong><p>${note}</p></article>`)
+    .map(
+      ([title, value, note, className, pill]) => `<article class="metric-card ${className}">
+        <p class="metric-meta">${title}</p>
+        <strong>${value}</strong>
+        <p class="metric-note"><span class="pill ${pill}">${note}</span></p>
+      </article>`,
+    )
     .join("");
 }
 
