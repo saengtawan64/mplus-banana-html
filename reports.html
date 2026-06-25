@@ -3,70 +3,70 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Reports | Mplus Banana</title>
+    <title>รายงาน | Mplus Banana</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body data-page="reports">
     <header class="app-header">
       <a class="brand" href="index.html">Mplus Banana</a>
-      <nav class="top-nav" aria-label="Main navigation"></nav>
+      <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
     <main class="page-shell">
-      <section class="topbar-card" aria-label="Report context">
+      <section class="topbar-card" aria-label="บริบทรายงาน">
         <div>
-          <h2>Monthly review</h2>
-          <p class="panel-kicker">Sample rows show table behavior before real Published CSV links are added.</p>
+          <h2>รายงานรายเดือน</h2>
+          <p class="panel-kicker">แถวตัวอย่างใช้ดูรูปแบบรายงานก่อนเชื่อม Published CSV จริง</p>
         </div>
         <div class="topbar-meta">
-          <a class="button" href="mapping.html">Mapping</a>
-          <a class="button" href="compare.html">Compare</a>
+          <a class="button" href="mapping.html">จับคู่ CSV</a>
+          <a class="button" href="compare.html">เปรียบเทียบ</a>
         </div>
       </section>
 
       <section class="page-heading">
         <div>
-          <p class="eyebrow">Reports</p>
-          <h1>Monthly sales report</h1>
-          <p class="page-subtitle">Review sample report rows before the first real Published CSV is connected.</p>
+          <p class="eyebrow">รายงาน</p>
+          <h1>รายงานยอดขายรายเดือน</h1>
+          <p class="page-subtitle">ดูแถวตัวอย่างก่อนเพิ่มลิงก์ Published CSV จริง</p>
         </div>
       </section>
 
-      <section class="filter-bar" aria-label="Report filters">
-        <label>Month <input id="reportMonth" type="month"></label>
-        <label>Branch <select id="reportBranch"></select></label>
-        <label>Metric
+      <section class="filter-bar" aria-label="ตัวกรองรายงาน">
+        <label>เดือน <input id="reportMonth" type="month"></label>
+        <label>สาขา <select id="reportBranch"></select></label>
+        <label>ตัวชี้วัด
           <select id="reportMetric">
-            <option value="totalSales">Total sales</option>
-            <option value="systemSales">System sales</option>
-            <option value="outsideSystemSales">Outside-system sales</option>
-            <option value="deviceCount">Device count</option>
+            <option value="totalSales">ยอดขายรวม</option>
+            <option value="systemSales">ยอดในระบบ</option>
+            <option value="outsideSystemSales">ยอดนอกระบบ</option>
+            <option value="deviceCount">จำนวนเครื่อง</option>
           </select>
         </label>
       </section>
 
       <div class="notice warn">
-        Prototype sample data only - not real CSV data. Report rows are placeholders until real Published CSV links are provided.
+        ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV แถวรายงานเป็นข้อมูลตัวอย่างจนกว่าจะมีลิงก์ Published CSV จริง
       </div>
 
       <section class="panel">
         <div class="panel-header">
           <div>
-            <h2>Report table</h2>
-            <p class="panel-kicker">Missing rows are shown as missing data, not zero.</p>
+            <h2>ตารางรายงาน</h2>
+            <p class="panel-kicker">ข้อมูลหายหรือไม่พบแถวจะแสดงเป็นไม่พบข้อมูล ไม่ใช่ค่า 0</p>
           </div>
         </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Branch</th>
-                <th>Total sales</th>
-                <th>System</th>
-                <th>Outside</th>
-                <th>Supporting metrics</th>
-                <th>Status</th>
+                <th>วันที่</th>
+                <th>สาขา</th>
+                <th>ยอดขายรวม</th>
+                <th>ในระบบ</th>
+                <th>นอกระบบ</th>
+                <th>ข้อมูลประกอบ</th>
+                <th>สถานะ</th>
               </tr>
             </thead>
             <tbody id="reportRows"></tbody>

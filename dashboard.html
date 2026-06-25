@@ -3,44 +3,44 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard | Mplus Banana</title>
+    <title>ยอดขาย | Mplus Banana</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body data-page="dashboard">
     <header class="app-header">
       <a class="brand" href="index.html">Mplus Banana</a>
-      <nav class="top-nav" aria-label="Main navigation"></nav>
+      <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
     <main class="page-shell">
-      <section class="topbar-card" aria-label="Dashboard context">
+      <section class="topbar-card" aria-label="บริบทยอดขาย">
         <div>
-          <h2>Branch sales cockpit</h2>
-          <p class="panel-kicker">Prototype sample flow. Real Published CSV links are not connected yet.</p>
+          <h2>ภาพรวมยอดขายสาขา</h2>
+          <p class="panel-kicker">หน้านี้เป็นต้นแบบ Phase 1 สำหรับทดลองใช้งาน ยังไม่ใช่ระบบจริง และยังไม่เชื่อม Published CSV จริง</p>
         </div>
         <div class="topbar-meta">
           <span class="pill yellow">HTML Quick Version</span>
-          <span class="pill gray">Prototype role only</span>
+          <span class="pill gray">มุมมองทดลองเท่านั้น</span>
         </div>
       </section>
 
       <section class="page-heading">
         <div>
-          <p class="eyebrow">Dashboard</p>
-          <h1>Sales summary</h1>
-          <p class="page-subtitle">Daily branch sales at a glance. Total sales stays limited to system sales plus outside-system sales.</p>
+          <p class="eyebrow">ยอดขาย</p>
+          <h1>ภาพรวมยอดขาย</h1>
+          <p class="page-subtitle">ดูยอดขายสาขาแบบเร็ว โดยยอดขายรวมคิดจากยอดในระบบ + ยอดนอกระบบเท่านั้น</p>
         </div>
-        <button class="button primary" id="refreshData" type="button">Refresh CSV</button>
+        <button class="button primary" id="refreshData" type="button">ตรวจสถานะ CSV</button>
       </section>
 
-      <section class="filter-bar" aria-label="Dashboard filters">
-        <label>Branch <select id="branchFilter"></select></label>
-        <label>Period <input id="periodFilter" type="month"></label>
-        <label>Channel
+      <section class="filter-bar" aria-label="ตัวกรองยอดขาย">
+        <label>สาขา <select id="branchFilter"></select></label>
+        <label>เดือน <input id="periodFilter" type="month"></label>
+        <label>ช่องทาง
           <select id="channelFilter">
-            <option value="all">All sales</option>
-            <option value="system">System sales</option>
-            <option value="outside">Outside-system sales</option>
+            <option value="all">ยอดขายทั้งหมด</option>
+            <option value="system">ยอดในระบบ</option>
+            <option value="outside">ยอดนอกระบบ</option>
           </select>
         </label>
       </section>
@@ -48,23 +48,23 @@
       <div id="dataStatus" class="notice neutral"></div>
 
       <div class="notice warn">
-        Prototype sample data only - not real CSV data unless a configured Published CSV loads successfully.
+        ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV
       </div>
 
-      <div class="action-row" aria-label="Dashboard secondary actions">
-        <a class="button" href="compare.html">Open comparison</a>
-        <a class="button" href="mapping.html">Check mapping</a>
-        <a class="button" href="export.html">Copy summary</a>
+      <div class="action-row" aria-label="เมนูเสริมของหน้ายอดขาย">
+        <a class="button" href="compare.html">เปรียบเทียบยอดขาย</a>
+        <a class="button" href="mapping.html">ตรวจหัวคอลัมน์</a>
+        <a class="button" href="export.html">คัดลอกสรุป</a>
       </div>
 
-      <section class="metric-grid" id="dashboardCards" aria-label="Sales metrics"></section>
+      <section class="metric-grid" id="dashboardCards" aria-label="ตัวเลขยอดขาย"></section>
 
       <section class="two-column">
         <article class="panel">
           <div class="panel-header">
             <div>
-              <h2>Sales trend</h2>
-              <p class="panel-kicker">System and outside-system sales only.</p>
+              <h2>แนวโน้มยอดขาย</h2>
+              <p class="panel-kicker">แสดงเฉพาะยอดในระบบและยอดนอกระบบ</p>
             </div>
           </div>
           <div class="chart-frame">
@@ -74,8 +74,8 @@
         <article class="panel">
           <div class="panel-header">
             <div>
-              <h2>Sales mix</h2>
-              <p class="panel-kicker">Finance, contracts, and profit remain supporting metrics.</p>
+              <h2>สัดส่วนยอดขาย</h2>
+              <p class="panel-kicker">ยอดจัด สัญญา และกำไรเป็นข้อมูลประกอบ ไม่รวมในยอดขายรวม</p>
             </div>
           </div>
           <div class="chart-frame">

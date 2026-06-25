@@ -3,58 +3,58 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Compare | Mplus Banana</title>
+    <title>เปรียบเทียบ | Mplus Banana</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body data-page="compare">
     <header class="app-header">
       <a class="brand" href="index.html">Mplus Banana</a>
-      <nav class="top-nav" aria-label="Main navigation"></nav>
+      <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
     <main class="page-shell">
-      <section class="topbar-card" aria-label="Comparison context">
+      <section class="topbar-card" aria-label="บริบทการเปรียบเทียบ">
         <div>
-          <h2>Sample comparison</h2>
-          <p class="panel-kicker">Chart view uses prototype sample data and keeps support metrics separate.</p>
+          <h2>เปรียบเทียบข้อมูลตัวอย่าง</h2>
+          <p class="panel-kicker">กราฟนี้ใช้ข้อมูลตัวอย่าง และแยกข้อมูลประกอบออกจากยอดขายรวม</p>
         </div>
         <div class="topbar-meta">
-          <a class="button" href="dashboard.html">Dashboard</a>
-          <a class="button" href="reports.html">Reports</a>
+          <a class="button" href="dashboard.html">ยอดขาย</a>
+          <a class="button" href="reports.html">รายงาน</a>
         </div>
       </section>
 
       <section class="page-heading">
         <div>
-          <p class="eyebrow">Compare</p>
-          <h1>Sales comparison</h1>
-          <p class="page-subtitle">Compare sales views with the current prototype sample set while keeping support metrics separate.</p>
+          <p class="eyebrow">เปรียบเทียบ</p>
+          <h1>เปรียบเทียบยอดขาย</h1>
+          <p class="page-subtitle">ดูตัวอย่างการเปรียบเทียบยอดขาย โดยข้อมูลประกอบยังไม่รวมในยอดขายรวม</p>
         </div>
       </section>
 
-      <section class="filter-bar" aria-label="Comparison controls">
-        <label>Compare by
+      <section class="filter-bar" aria-label="ตัวกรองการเปรียบเทียบ">
+        <label>เปรียบเทียบตาม
           <select id="compareDimension">
-            <option value="branch">Branch</option>
-            <option value="month">Month</option>
-            <option value="category">Category</option>
-            <option value="channel">Channel</option>
+            <option value="branch">สาขา</option>
+            <option value="month">เดือน</option>
+            <option value="category">หมวดหมู่</option>
+            <option value="channel">ช่องทาง</option>
           </select>
         </label>
-        <label>Chart
+        <label>รูปแบบกราฟ
           <select id="chartType">
-            <option value="bar">Bar</option>
-            <option value="line">Line</option>
-            <option value="doughnut">Doughnut</option>
-            <option value="stackedBar">Stacked bar</option>
+            <option value="bar">แท่ง</option>
+            <option value="line">เส้น</option>
+            <option value="doughnut">วงกลม</option>
+            <option value="stackedBar">แท่งซ้อน</option>
           </select>
         </label>
-        <label>Metric
+        <label>ตัวชี้วัด
           <select id="compareMetric">
-            <option value="totalSales">Total sales</option>
-            <option value="systemSales">System sales</option>
-            <option value="outsideSystemSales">Outside-system sales</option>
-            <option value="deviceCount">Device count</option>
+            <option value="totalSales">ยอดขายรวม</option>
+            <option value="systemSales">ยอดในระบบ</option>
+            <option value="outsideSystemSales">ยอดนอกระบบ</option>
+            <option value="deviceCount">จำนวนเครื่อง</option>
           </select>
         </label>
       </section>
@@ -62,14 +62,14 @@
       <section class="panel">
         <div class="panel-header">
           <div>
-            <h2>Comparison chart</h2>
-            <p class="panel-kicker">Prototype sample data only - not real CSV data.</p>
+            <h2>กราฟเปรียบเทียบ</h2>
+            <p class="panel-kicker">ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV</p>
           </div>
         </div>
         <div class="chart-frame">
           <canvas id="compareChart" height="260"></canvas>
         </div>
-        <p class="chart-note">If Chart.js is unavailable from CDN, the page should remain usable and the filters should stay visible.</p>
+        <p class="chart-note">ถ้าโหลด Chart.js จาก CDN ไม่ได้ หน้านี้ยังต้องใช้งานส่วนตัวกรองได้ตามปกติ</p>
       </section>
     </main>
 

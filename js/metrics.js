@@ -50,6 +50,6 @@ export function targetStatus(actual, target) {
 }
 
 export function formatMoney(value) {
-  if (value === null || value === undefined) return "No data";
+  if (value === null || value === undefined) return "ไม่มีข้อมูล";
   return new Intl.NumberFormat("th-TH", { maximumFractionDigits: 0 }).format(value);
 }

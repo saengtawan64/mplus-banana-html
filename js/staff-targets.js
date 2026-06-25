@@ -26,10 +26,10 @@ function renderTargets() {
   const salesPercent = percent(branchFocusActual.sales, target.targetSales);
   const devicePercent = percent(branchFocusActual.devices, target.targetDevices);
   const cards = [
-    ["Focus brands", target.brands.join(" + "), "branch-level focus group", "gray", null],
-    ["Sales progress", `${formatMoney(branchFocusActual.sales)} / ${formatMoney(target.targetSales)}`, "branch focus-brand sales", salesStatus, salesPercent],
-    ["Device progress", `${branchFocusActual.devices} / ${target.targetDevices}`, "branch focus-brand devices", deviceStatus, devicePercent],
-    ["Attribution", "Branch level only", "not personal staff sales", "gray", null],
+    ["แบรนด์โฟกัส", target.brands.join(" + "), "กลุ่มแบรนด์ระดับสาขา", "gray", null],
+    ["ความคืบหน้ายอดขาย", `${formatMoney(branchFocusActual.sales)} / ${formatMoney(target.targetSales)}`, "ยอดแบรนด์โฟกัสระดับสาขา", salesStatus, salesPercent],
+    ["ความคืบหน้าจำนวนเครื่อง", `${branchFocusActual.devices} / ${target.targetDevices}`, "จำนวนเครื่องแบรนด์โฟกัสระดับสาขา", deviceStatus, devicePercent],
+    ["การนับยอด", "ระดับสาขาเท่านั้น", "ไม่ใช่ยอดขายรายบุคคล", "gray", null],
   ];
 
   document.querySelector("#targetCards").innerHTML = cards

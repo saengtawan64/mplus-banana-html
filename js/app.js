@@ -3,21 +3,21 @@ import { getSession, setSession } from "./auth-lite.js";
 import { roleOptions } from "./roles.js";
 
 export const navItems = [
-  ["dashboard", "Dashboard", "dashboard.html"],
-  ["reports", "Reports", "reports.html"],
-  ["compare", "Compare", "compare.html"],
-  ["staff-targets", "Targets", "staff-targets.html"],
-  ["branches", "Branches", "branches.html"],
-  ["mapping", "Mapping", "mapping.html"],
-  ["export", "Copy", "export.html"],
+  ["dashboard", "ยอดขาย", "dashboard.html"],
+  ["reports", "รายงาน", "reports.html"],
+  ["compare", "เปรียบเทียบ", "compare.html"],
+  ["staff-targets", "เป้าสาขา", "staff-targets.html"],
+  ["branches", "สาขา", "branches.html"],
+  ["mapping", "จับคู่ CSV", "mapping.html"],
+  ["export", "คัดลอกสรุป", "export.html"],
 ];
 
 const bottomNavItems = [
-  ["home", "Home", "index.html"],
-  ["dashboard", "Dashboard", "dashboard.html"],
-  ["reports", "Reports", "reports.html"],
-  ["staff-targets", "Targets", "staff-targets.html"],
-  ["export", "Copy", "export.html"],
+  ["home", "หน้าแรก", "index.html"],
+  ["dashboard", "ยอดขาย", "dashboard.html"],
+  ["reports", "รายงาน", "reports.html"],
+  ["staff-targets", "เป้าสาขา", "staff-targets.html"],
+  ["export", "สรุป", "export.html"],
 ];
 
 export function renderNavigation() {
@@ -34,7 +34,7 @@ function renderBottomNavigation() {
   const current = document.body.dataset.page;
   const nav = document.createElement("nav");
   nav.className = "bottom-nav";
-  nav.setAttribute("aria-label", "Mobile primary navigation");
+  nav.setAttribute("aria-label", "เมนูหลักบนมือถือ");
   nav.innerHTML = bottomNavItems
     .map(([key, label, href]) => `<a href="${href}" ${key === current ? 'aria-current="page"' : ""}>${label}</a>`)
     .join("");
@@ -72,11 +72,11 @@ function bootMappingPreview() {
   const target = document.querySelector("#mappingStatus");
   if (!target) return;
   target.innerHTML = [
-    ["Date", "Required for time filtering"],
-    ["System sales", "Included in total sales"],
-    ["Outside-system sales", "Included in total sales"],
-    ["Finance amount", "Supporting metric only"],
-    ["Contract count", "Supporting metric only"],
+    ["วันที่", "จำเป็นสำหรับกรองช่วงเวลา"],
+    ["ยอดในระบบ", "รวมในยอดขายรวม"],
+    ["ยอดนอกระบบ", "รวมในยอดขายรวม"],
+    ["ยอดจัด", "ข้อมูลประกอบเท่านั้น"],
+    ["จำนวนสัญญา", "ข้อมูลประกอบเท่านั้น"],
   ]
     .map(([name, note]) => `<div class="list-item"><strong>${name}</strong><span class="pill gray">${note}</span></div>`)
     .join("");

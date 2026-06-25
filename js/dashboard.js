@@ -11,14 +11,14 @@ const sampleRows = [
   { date: "2026-06-02", systemSales: "0", outsideSystemSales: "18000", deviceCount: "0", financeAmount: "0", contractCount: "0" },
 ];
 
-const SAMPLE_DATA_LABEL = "Prototype sample data only - not real CSV data.";
+const SAMPLE_DATA_LABEL = "ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV";
 
 function renderCards(metric) {
   const cards = [
-    ["Total sales", metric.status === "ok" ? formatMoney(metric.totalSales) : "No data", "system + outside only", "featured", "yellow"],
-    ["System sales", formatMoney(metric.systemSales?.value), "included in total", "", "green"],
-    ["Outside-system sales", formatMoney(metric.outsideSystemSales?.value), "included in total", "", "yellow"],
-    ["Supporting metrics", `${formatMoney(metric.financeAmount?.value)} / ${metric.contractCount?.value ?? "No data"}`, "not included in total", "", "gray"],
+    ["ยอดขายรวม", metric.status === "ok" ? formatMoney(metric.totalSales) : "ไม่มีข้อมูล", "ในระบบ + นอกระบบเท่านั้น", "featured", "yellow"],
+    ["ยอดในระบบ", formatMoney(metric.systemSales?.value), "รวมในยอดขายรวม", "", "green"],
+    ["ยอดนอกระบบ", formatMoney(metric.outsideSystemSales?.value), "รวมในยอดขายรวม", "", "yellow"],
+    ["ข้อมูลประกอบ", `${formatMoney(metric.financeAmount?.value)} / ${metric.contractCount?.value ?? "ไม่มีข้อมูล"}`, "ไม่รวมในยอดขายรวม", "", "gray"],
   ];
   document.querySelector("#dashboardCards").innerHTML = cards
     .map(
@@ -38,8 +38,8 @@ async function renderCharts(metric) {
   new Chart(document.querySelector("#salesTrendChart"), {
     type: "bar",
     data: {
-      labels: ["System", "Outside"],
-      datasets: [{ label: "Sales", data: [metric.systemSales.value, metric.outsideSystemSales.value], backgroundColor: ["#1f7a5a", "#2d65a3"] }],
+      labels: ["ในระบบ", "นอกระบบ"],
+      datasets: [{ label: "ยอดขาย", data: [metric.systemSales.value, metric.outsideSystemSales.value], backgroundColor: ["#1f7a5a", "#2d65a3"] }],
     },
     options: { responsive: true, plugins: { legend: { display: false } } },
   });
@@ -47,7 +47,7 @@ async function renderCharts(metric) {
   new Chart(document.querySelector("#salesMixChart"), {
     type: "doughnut",
     data: {
-      labels: ["System", "Outside"],
+      labels: ["ในระบบ", "นอกระบบ"],
       datasets: [{ data: [metric.systemSales.value, metric.outsideSystemSales.value], backgroundColor: ["#1f7a5a", "#f0b44c"] }],
     },
     options: { responsive: true },
@@ -74,10 +74,10 @@ async function loadDashboard() {
 
   if (!mapping.complete) {
     status.className = "notice warn";
-    status.textContent = `Mapping incomplete: ${mapping.missing.join(", ")}. Missing fields are treated as no data.`;
+    status.textContent = `ยังจับคู่หัวคอลัมน์ไม่ครบ: ${mapping.missing.join(", ")} ข้อมูลที่ขาดจะถือว่าไม่พบข้อมูล ไม่ใช่ค่า 0`;
   } else if (result.status === "ok") {
     status.className = "notice ok";
-    status.textContent = "CSV loaded and mapped by header.";
+    status.textContent = "โหลด CSV และจับคู่จากหัวคอลัมน์แล้ว";
   }
 
   renderCards(metric);

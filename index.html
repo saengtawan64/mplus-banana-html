@@ -3,68 +3,68 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mplus Banana Quick HTML</title>
+    <title>Mplus Banana | หน้าแรก</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body data-page="home">
     <header class="app-header">
       <a class="brand" href="index.html">Mplus Banana</a>
-      <nav class="top-nav" aria-label="Main navigation"></nav>
+      <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
     <main class="page-shell">
       <section class="hero-panel">
         <div class="hero-content">
           <p class="eyebrow">HTML Quick Version</p>
-          <h1>Standalone sales dashboard prototype</h1>
-          <p class="hero-copy">A clean static project for CSV-based reporting, mapping checks, branch summaries, and copy-ready sales updates.</p>
-          <div class="hero-stat-grid" aria-label="Prototype status">
-            <div class="hero-stat"><strong>Static app</strong><span>No backend or build step</span></div>
-            <div class="hero-stat"><strong>CSV-ready</strong><span>Header mapping first</span></div>
-            <div class="hero-stat"><strong>Role-safe</strong><span>Approved role keys only</span></div>
+          <h1>หน้าสรุปยอดขายสาขาแบบทดลอง</h1>
+          <p class="hero-copy">เว็บ static สำหรับดูภาพรวมยอดขาย ตรวจหัวคอลัมน์ CSV ดูสาขา และคัดลอกสรุปยอดขายแบบง่าย</p>
+          <div class="hero-stat-grid" aria-label="สถานะต้นแบบ">
+            <div class="hero-stat"><strong>เว็บ static</strong><span>ไม่มี backend หรือระบบ build</span></div>
+            <div class="hero-stat"><strong>เตรียมไว้สำหรับ CSV</strong><span>ยังไม่เชื่อม CSV จริง</span></div>
+            <div class="hero-stat"><strong>Role ปลอดภัย</strong><span>ใช้ role key ที่อนุมัติแล้วเท่านั้น</span></div>
           </div>
           <div class="quick-actions">
-            <a class="button primary" href="dashboard.html">Open dashboard</a>
-            <a class="button" href="mapping.html">Review mapping</a>
+            <a class="button primary" href="dashboard.html">ดูยอดขาย</a>
+            <a class="button" href="mapping.html">ตรวจหัวคอลัมน์ CSV</a>
           </div>
         </div>
-        <div class="login-panel" aria-label="Prototype access selector">
-          <h2>Prototype view</h2>
-          <p class="panel-note">Local prototype controls only. This is not real authentication or production permission enforcement.</p>
-          <label for="roleSelect">Prototype role</label>
+        <div class="login-panel" aria-label="ตัวเลือกมุมมองทดลอง">
+          <h2>มุมมองทดลอง</h2>
+          <p class="panel-note">ตัวเลือกมุมมองทดลองเท่านั้น ไม่ใช่ระบบล็อกอินจริง และไม่ใช่ระบบกำหนดสิทธิ์จริง</p>
+          <label for="roleSelect">มุมมอง role ทดลอง</label>
           <select id="roleSelect"></select>
-          <label for="branchSelect">Branch</label>
+          <label for="branchSelect">สาขา</label>
           <select id="branchSelect"></select>
         </div>
       </section>
 
-      <section class="status-grid" aria-label="Project constraints">
+      <section class="status-grid" aria-label="ข้อจำกัดของโปรเจกต์">
         <article class="status-card">
-          <h2>Standalone</h2>
-          <p>No React, Vite, package file, Firebase writes, or old project dependency.</p>
+          <h2>โปรเจกต์แยกเดี่ยว</h2>
+          <p>ไม่มี React, Vite, package file, Firebase writes หรือการพึ่งพาโปรเจกต์เก่า</p>
         </article>
         <article class="status-card">
-          <h2>CSV first</h2>
-          <p>Published CSV is the sales source of truth. Mapping is based on headers.</p>
+          <h2>เตรียมไว้สำหรับ CSV</h2>
+          <p>เมื่อได้รับลิงก์ Published CSV จริง ระบบจะตรวจจากหัวคอลัมน์ ไม่ใช้ตำแหน่งคอลัมน์ตายตัว</p>
         </article>
         <article class="status-card">
-          <h2>Role safe</h2>
-          <p>Display labels map back to CREATOR, OWNER, ADMIN, STAFF, or VIEWER.</p>
+          <h2>Role key คงเดิม</h2>
+          <p>ชื่อที่แสดงต้อง map กลับไปที่ CREATOR, OWNER, ADMIN, STAFF หรือ VIEWER เท่านั้น</p>
         </article>
       </section>
 
-      <section class="setup-grid" aria-label="Setup shortcuts">
+      <section class="setup-grid" aria-label="ทางลัดสำหรับตั้งค่า">
         <a class="setup-card" href="branches.html">
-          <h2>Branch setup</h2>
-          <span>Review Thai branch display names and active status.</span>
+          <h2>สาขา</h2>
+          <span>ดูชื่อสาขาภาษาไทยและสถานะการแสดงผล</span>
         </a>
         <a class="setup-card" href="compare.html">
-          <h2>Compare view</h2>
-          <span>Preview the sample comparison chart before real CSV data.</span>
+          <h2>เปรียบเทียบ</h2>
+          <span>ดูตัวอย่างกราฟเปรียบเทียบก่อนเชื่อม CSV จริง</span>
         </a>
         <a class="setup-card" href="export.html">
-          <h2>Copy summary</h2>
-          <span>Prepare copyable text only, without PDF or Excel export.</span>
+          <h2>คัดลอกสรุป</h2>
+          <span>เตรียมข้อความสำหรับคัดลอกเท่านั้น ไม่มี PDF หรือ Excel</span>
         </a>
       </section>
     </main>

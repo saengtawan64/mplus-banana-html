@@ -7,11 +7,11 @@ export const ROLE_KEYS = Object.freeze({
 });
 
 export const ROLE_LABELS = Object.freeze({
-  [ROLE_KEYS.CREATOR]: "Creator",
-  [ROLE_KEYS.OWNER]: "Owner",
-  [ROLE_KEYS.ADMIN]: "Admin",
-  [ROLE_KEYS.STAFF]: "Staff",
-  [ROLE_KEYS.VIEWER]: "Viewer",
+  [ROLE_KEYS.CREATOR]: "คุณตะวัน (Creator)",
+  [ROLE_KEYS.OWNER]: "เจ้าของร้าน (Owner)",
+  [ROLE_KEYS.ADMIN]: "ผู้จัดการ (Admin)",
+  [ROLE_KEYS.STAFF]: "พนักงาน (Staff)",
+  [ROLE_KEYS.VIEWER]: "ผู้ดูอย่างเดียว (Viewer)",
 });
 
 const DISPLAY_TO_ROLE = new Map([

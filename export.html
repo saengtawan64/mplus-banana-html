@@ -3,59 +3,59 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Copy Summary | Mplus Banana</title>
+    <title>คัดลอกสรุป | Mplus Banana</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body data-page="export">
     <header class="app-header">
       <a class="brand" href="index.html">Mplus Banana</a>
-      <nav class="top-nav" aria-label="Main navigation"></nav>
+      <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
     <main class="page-shell">
-      <section class="topbar-card" aria-label="Copy Summary context">
+      <section class="topbar-card" aria-label="บริบทคัดลอกสรุป">
         <div>
-          <h2>Share-ready text</h2>
-          <p class="panel-kicker">Copyable summary only. No PDF or Excel export is generated.</p>
+          <h2>ข้อความพร้อมส่งต่อ</h2>
+          <p class="panel-kicker">คัดลอกข้อความสรุปเท่านั้น ไม่มีการสร้าง PDF หรือ Excel</p>
         </div>
         <div class="topbar-meta">
-          <a class="button" href="dashboard.html">Dashboard</a>
-          <a class="button" href="reports.html">Reports</a>
+          <a class="button" href="dashboard.html">ยอดขาย</a>
+          <a class="button" href="reports.html">รายงาน</a>
         </div>
       </section>
 
       <section class="page-heading">
         <div>
-          <p class="eyebrow">Copy Summary</p>
-          <h1>Copy Summary only</h1>
-          <p class="page-subtitle">Prepare a clean text summary for sharing. This page does not create PDF or Excel files.</p>
+          <p class="eyebrow">คัดลอกสรุป</p>
+          <h1>คัดลอกสรุปเท่านั้น</h1>
+          <p class="page-subtitle">เตรียมข้อความสรุปสำหรับส่งต่อ หน้านี้ไม่สร้าง PDF หรือ Excel</p>
         </div>
       </section>
 
       <div class="notice warn">
-        Prototype sample data only - not real CSV data. This page creates copyable text only and does not export PDF or Excel files.
+        ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV หน้านี้คัดลอกข้อความเท่านั้น ไม่มีการสร้าง PDF หรือ Excel
       </div>
 
       <section class="summary-layout">
         <div class="summary-card">
-          <h2>Format</h2>
-          <p class="panel-kicker">Choose a text style, then copy the summary for chat or owner updates.</p>
-          <label>Summary format
+          <h2>รูปแบบข้อความ</h2>
+          <p class="panel-kicker">เลือกรูปแบบข้อความ แล้วคัดลอกสรุปสำหรับส่งต่อ</p>
+          <label>รูปแบบสรุป
             <select id="summaryFormat">
-              <option value="short">Short</option>
-              <option value="formal">Formal</option>
+              <option value="short">สั้น</option>
+              <option value="formal">ทางการ</option>
               <option value="line">LINE</option>
-              <option value="owner">Owner summary</option>
+              <option value="owner">สรุปสำหรับเจ้าของร้าน</option>
             </select>
           </label>
-          <button class="button primary copy-action" id="copySummary" type="button">Copy Summary</button>
+          <button class="button primary copy-action" id="copySummary" type="button">คัดลอกสรุป</button>
         </div>
 
         <section class="panel summary-preview">
           <div class="panel-header">
             <div>
-              <h2>Summary preview</h2>
-              <p class="panel-kicker">Copyable text only. Sample numbers are not real CSV data.</p>
+              <h2>ตัวอย่างข้อความสรุป</h2>
+              <p class="panel-kicker">ข้อความสำหรับคัดลอกเท่านั้น ตัวเลขตัวอย่างยังไม่ใช่ยอดขายจริงจาก CSV</p>
             </div>
           </div>
           <textarea id="summaryText" rows="12" readonly></textarea>

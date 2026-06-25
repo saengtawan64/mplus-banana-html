@@ -3,44 +3,44 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CSV Mapping | Mplus Banana</title>
+    <title>จับคู่ CSV | Mplus Banana</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body data-page="mapping">
     <header class="app-header">
       <a class="brand" href="index.html">Mplus Banana</a>
-      <nav class="top-nav" aria-label="Main navigation"></nav>
+      <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
     <main class="page-shell">
-      <section class="topbar-card" aria-label="Mapping context">
+      <section class="topbar-card" aria-label="บริบทการจับคู่ CSV">
         <div>
-          <h2>CSV readiness</h2>
-          <p class="panel-kicker">Validate headers first. Fixed column positions are intentionally avoided.</p>
+          <h2>ความพร้อมของหัวคอลัมน์ CSV</h2>
+          <p class="panel-kicker">ตรวจหัวคอลัมน์ก่อนเสมอ และตั้งใจไม่ใช้ตำแหน่งคอลัมน์แบบตายตัว</p>
         </div>
         <div class="topbar-meta">
-          <a class="button" href="branches.html">Branches</a>
-          <a class="button" href="reports.html">Reports</a>
+          <a class="button" href="branches.html">สาขา</a>
+          <a class="button" href="reports.html">รายงาน</a>
         </div>
       </section>
 
       <section class="page-heading">
         <div>
-          <p class="eyebrow">Mapping</p>
-          <h1>CSV header mapping</h1>
-          <p class="page-subtitle">Validate CSV headers before trusting sales totals or supporting metrics.</p>
+          <p class="eyebrow">จับคู่ CSV</p>
+          <h1>จับคู่หัวคอลัมน์ CSV</h1>
+          <p class="page-subtitle">ตรวจหัวคอลัมน์ก่อนนำยอดขายหรือข้อมูลประกอบไปใช้งาน</p>
         </div>
       </section>
 
       <div class="notice neutral">
-        Mapping uses detected CSV headers only. Fixed column positions are intentionally not used.
+        การจับคู่ใช้หัวคอลัมน์ CSV ที่ตรวจพบเท่านั้น ไม่ใช้ตำแหน่งคอลัมน์แบบตายตัว
       </div>
 
       <section class="panel">
         <div class="panel-header">
           <div>
-            <h2>Detected mapping status</h2>
-            <p class="panel-kicker">Required sales fields and supporting metrics stay visually separate.</p>
+            <h2>สถานะการจับคู่</h2>
+            <p class="panel-kicker">ช่องยอดขายที่จำเป็นและข้อมูลประกอบต้องแยกกันชัดเจน</p>
           </div>
         </div>
         <div id="mappingStatus" class="list-stack"></div>

@@ -36,16 +36,16 @@ export function parseCsv(text) {
 
 export async function loadPublishedCsv(url) {
   if (!url) {
-    return { status: "missing", rows: [], message: "CSV URL is not configured for this branch/year." };
+    return { status: "missing", rows: [], message: "ยังไม่ได้ตั้งค่าลิงก์ CSV สำหรับสาขา/ปีนี้" };
   }
 
   try {
     const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {
-      return { status: "error", rows: [], message: `CSV request failed with status ${response.status}.` };
+      return { status: "error", rows: [], message: `เรียก CSV ไม่สำเร็จ สถานะ ${response.status}` };
     }
     const text = await response.text();
-    return { status: "ok", rows: parseCsv(text), message: "CSV loaded." };
+    return { status: "ok", rows: parseCsv(text), message: "โหลด CSV แล้ว" };
   } catch (error) {
     return { status: "error", rows: [], message: error.message };
   }
