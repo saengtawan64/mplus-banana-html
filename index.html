@@ -14,18 +14,22 @@
 
     <main class="page-shell">
       <section class="hero-panel">
-        <div>
+        <div class="hero-content">
           <p class="eyebrow">HTML Quick Version</p>
           <h1>Standalone sales dashboard prototype</h1>
           <p class="hero-copy">A clean static project for CSV-based reporting, mapping checks, branch summaries, and copy-ready sales updates.</p>
+          <div class="quick-actions">
+            <a class="button primary" href="dashboard.html">Open dashboard</a>
+            <a class="button" href="mapping.html">Review mapping</a>
+          </div>
         </div>
         <div class="login-panel" aria-label="Prototype access selector">
+          <h2>Prototype view</h2>
           <p class="panel-note">Local prototype controls only. This is not real authentication or production permission enforcement.</p>
           <label for="roleSelect">Prototype role</label>
           <select id="roleSelect"></select>
           <label for="branchSelect">Branch</label>
           <select id="branchSelect"></select>
-          <a class="button primary" href="dashboard.html">Open dashboard</a>
         </div>
       </section>
 

@@ -17,6 +17,7 @@
         <div>
           <p class="eyebrow">Copy Summary</p>
           <h1>Copy Summary only</h1>
+          <p class="page-subtitle">Prepare a clean text summary for sharing. This page does not create PDF or Excel files.</p>
         </div>
       </section>
 
@@ -33,11 +34,16 @@
             <option value="owner">Owner summary</option>
           </select>
         </label>
-        <button class="button" id="copySummary" type="button">Copy</button>
+        <button class="button primary copy-action" id="copySummary" type="button">Copy Summary</button>
       </section>
 
-      <section class="panel">
-        <h2>Summary preview</h2>
+      <section class="panel summary-preview">
+        <div class="panel-header">
+          <div>
+            <h2>Summary preview</h2>
+            <p class="panel-kicker">Copyable text only. Sample numbers are not real CSV data.</p>
+          </div>
+        </div>
         <textarea id="summaryText" rows="12" readonly></textarea>
       </section>
     </main>

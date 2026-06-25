@@ -17,8 +17,9 @@
         <div>
           <p class="eyebrow">Dashboard</p>
           <h1>Sales summary</h1>
+          <p class="page-subtitle">Daily branch sales at a glance. Total sales stays limited to system sales plus outside-system sales.</p>
         </div>
-        <button class="button" id="refreshData" type="button">Refresh CSV</button>
+        <button class="button primary" id="refreshData" type="button">Refresh CSV</button>
       </section>
 
       <section class="filter-bar" aria-label="Dashboard filters">
@@ -43,12 +44,26 @@
 
       <section class="two-column">
         <article class="panel">
-          <h2>Sales trend</h2>
-          <canvas id="salesTrendChart" height="220"></canvas>
+          <div class="panel-header">
+            <div>
+              <h2>Sales trend</h2>
+              <p class="panel-kicker">System and outside-system sales only.</p>
+            </div>
+          </div>
+          <div class="chart-frame">
+            <canvas id="salesTrendChart" height="220"></canvas>
+          </div>
         </article>
         <article class="panel">
-          <h2>Sales mix</h2>
-          <canvas id="salesMixChart" height="220"></canvas>
+          <div class="panel-header">
+            <div>
+              <h2>Sales mix</h2>
+              <p class="panel-kicker">Finance, contracts, and profit remain supporting metrics.</p>
+            </div>
+          </div>
+          <div class="chart-frame">
+            <canvas id="salesMixChart" height="220"></canvas>
+          </div>
         </article>
       </section>
     </main>
