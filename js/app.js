@@ -12,6 +12,14 @@ export const navItems = [
   ["export", "Copy", "export.html"],
 ];
 
+const bottomNavItems = [
+  ["home", "Home", "index.html"],
+  ["dashboard", "Dashboard", "dashboard.html"],
+  ["reports", "Reports", "reports.html"],
+  ["staff-targets", "Targets", "staff-targets.html"],
+  ["export", "Copy", "export.html"],
+];
+
 export function renderNavigation() {
   const current = document.body.dataset.page;
   document.querySelectorAll(".top-nav").forEach((nav) => {
@@ -19,6 +27,19 @@ export function renderNavigation() {
       .map(([key, label, href]) => `<a href="${href}" ${key === current ? 'aria-current="page"' : ""}>${label}</a>`)
       .join("");
   });
+}
+
+function renderBottomNavigation() {
+  if (document.querySelector(".bottom-nav")) return;
+  const current = document.body.dataset.page;
+  const nav = document.createElement("nav");
+  nav.className = "bottom-nav";
+  nav.setAttribute("aria-label", "Mobile primary navigation");
+  nav.innerHTML = bottomNavItems
+    .map(([key, label, href]) => `<a href="${href}" ${key === current ? 'aria-current="page"' : ""}>${label}</a>`)
+    .join("");
+  document.body.classList.add("has-bottom-nav");
+  document.body.append(nav);
 }
 
 export function populateBranchSelect(select, selectedBranchId = getSession().branchId) {
@@ -62,5 +83,6 @@ function bootMappingPreview() {
 }
 
 renderNavigation();
+renderBottomNavigation();
 bootHomeControls();
 bootMappingPreview();
