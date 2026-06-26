@@ -96,6 +96,62 @@ Function checked: `parseContextualSalesCsv(csvText)`
 - No finance/contract/profit values included in official sales.
 - Output remains review-only.
 
+## Cloudflare Live CSV Preview Panel Smoke Check
+
+Status: PASS  
+Scope: live smoke test only  
+Tested/deployed commit: `1ca3e22 feat: add live csv preview panel`  
+Cloudflare version: `4a145650`  
+Traffic: `100%`  
+Live URL tested: `https://mplus-banana-html.saengtawan64.workers.dev/dashboard.html`  
+Cloudflare normalized path: `/dashboard`
+
+No manual redeploy was needed because Cloudflare already had the latest approved deployment active.
+
+### Key Live Results
+
+- Dashboard loaded.
+- Sample/prototype warning remained visible.
+- Hero card rendered.
+- System/outside cards rendered.
+- Supporting metrics rendered.
+- Focus progress rendered.
+- Recent bars rendered.
+- Monthly chart/tabs rendered.
+- Daily table rendered.
+- Live CSV preview panel was visible.
+- Preview panel clearly said preview only / not replacing dashboard data.
+- Preview panel reached:
+  - `Fetch: success`
+  - `Parser: warning`
+  - `Draft rows: 361`
+  - `Warnings: 2`
+  - `Errors: 0`
+- Desktop smoke: PASS.
+- Mobile smoke: PASS at about `390x844`.
+- Mobile bottom nav was visible.
+- No blocking console errors were observed.
+
+### Live Guardrails Confirmed
+
+- Dashboard sample data remained unchanged.
+- Sample/prototype warning remained visible.
+- No parser rows replaced dashboard metrics/cards/charts/table.
+- Live CSV output is preview/debug only.
+- No live CSV data is official dashboard data yet.
+- No Firebase/Auth/backend/API.
+- No AI/Chat/Stock/PDF/Excel.
+- No parser logic changes.
+- No new file changes after smoke.
+- No new commit/push during smoke.
+
+### Still Not Approved
+
+- No dashboard replacement with CSV data yet.
+- No CSV `ยอดรวม` validation yet.
+- No production financial reporting.
+- No official dashboard numbers from live CSV yet.
+
 ## Guardrails Confirmed
 
 The smoke check confirmed:
