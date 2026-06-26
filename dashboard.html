@@ -39,6 +39,18 @@
         ข้อมูลตัวอย่างเท่านั้น — ยังไม่ใช่ยอดขายจริงจาก CSV / ต้นแบบ Phase 1
       </div>
 
+      <section class="panel" id="liveCsvPreviewPanel" aria-label="ตรวจ CSV จริงแบบ Preview เท่านั้น">
+        <div class="panel-header">
+          <div>
+            <h2>ตรวจ CSV จริงแบบ Preview เท่านั้น</h2>
+            <p class="panel-kicker">ยังไม่แทนข้อมูล Dashboard ตัวอย่าง</p>
+          </div>
+        </div>
+        <div id="liveCsvPreviewStatus" class="notice neutral" aria-live="polite">
+          กำลังตรวจ CSV แบบ read-only...
+        </div>
+      </section>
+
       <section class="dashboard-summary" aria-label="สรุปยอดขายตัวอย่าง">
         <article class="metric-card dashboard-hero-card" id="totalSalesCard"></article>
         <div class="dashboard-secondary-cards" id="salesBreakdownCards"></div>
@@ -126,5 +138,6 @@
     </main>
 
     <script type="module" src="js/dashboard.js"></script>
+    <script type="module" src="js/live-csv-preview.js"></script>
   </body>
 </html>
