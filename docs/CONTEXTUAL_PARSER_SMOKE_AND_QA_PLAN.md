@@ -65,6 +65,37 @@ The orchestration output includes these review-only summary objects:
 - `draftRowsSummary`
 - `totalSalesSummary`
 
+## Local CSV Text Parser Smoke Check
+
+Status: PASS  
+Tested commit: `9af4d46 feat: add local contextual csv text parser`  
+Scope: read-only local smoke check only  
+Fixture used: `tests/fixtures/lansak-contextual-sample.csv`  
+Function checked: `parseContextualSalesCsv(csvText)`
+
+### Key Results
+
+- `inputType: text`
+- `reviewOnly: true`
+- Mapping, normalized output, and summaries were present.
+- Review-only draft rows length: `4`
+- Blank text returned `PARSER_STATUS.STOP`.
+- Whitespace-only text returned `PARSER_STATUS.STOP`.
+- Malformed/unclosed quote text returned `PARSER_STATUS.STOP`.
+- Quoted comma value `"1,200"` parsed safely without breaking column alignment.
+- Existing rows-array path still worked as a regression check.
+
+### Guardrails Confirmed
+
+- No file changes from the smoke run.
+- No live CSV/fetch.
+- No dashboard/report/compare integration.
+- No cross-row sales sums or financial aggregates.
+- No CSV `ยอดรวม` used as official total.
+- No `csvTotalCrossCheckColumn` value used as official total.
+- No finance/contract/profit values included in official sales.
+- Output remains review-only.
+
 ## Guardrails Confirmed
 
 The smoke check confirmed:
