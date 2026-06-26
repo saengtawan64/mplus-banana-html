@@ -115,13 +115,205 @@ export function parseContextualSalesCsv(rowsOrText, options = {}) {
 }
 
 export function detectContextualMapping(rows, options = {}) {
-  void rows;
   void options;
 
-  return skeletonStopResult({
+  const result = {
+    status: PARSER_STATUS.OK,
     complete: false,
-    columns: null,
+    columns: {
+      monthMarkerColumn: 0,
+      dayColumn: null,
+      systemSalesColumn: null,
+      outsideSystemSalesColumn: null,
+      deviceCountColumn: null,
+      financeAmountColumn: null,
+      contractCountColumn: null,
+      profitColumn: null,
+      csvTotalCrossCheckColumn: null,
+    },
+    required: {
+      day: {
+        field: "วันที่",
+        column: null,
+        matched: false,
+        confidence: "low",
+      },
+      systemSales: {
+        ...REQUIRED_CONTEXTUAL_FIELDS.systemSales,
+        column: null,
+        matched: false,
+        confidence: "low",
+      },
+      outsideSystemSales: {
+        ...REQUIRED_CONTEXTUAL_FIELDS.outsideSystemSales,
+        column: null,
+        matched: false,
+        confidence: "low",
+      },
+    },
+    supporting: {
+      deviceCount: {
+        ...SUPPORTING_FIELDS.deviceCount,
+        column: null,
+        matched: false,
+        confidence: "low",
+      },
+      financeAmount: {
+        ...SUPPORTING_FIELDS.financeAmount,
+        column: null,
+        matched: false,
+        confidence: "low",
+      },
+      contractCount: {
+        ...SUPPORTING_FIELDS.contractCount,
+        column: null,
+        matched: false,
+        confidence: "low",
+      },
+      profit: {
+        ...SUPPORTING_FIELDS.profit,
+        column: null,
+        matched: false,
+        confidence: "low",
+      },
+    },
+    crossCheck: {
+      ...CROSS_CHECK_FIELD,
+      column: null,
+      matched: false,
+      confidence: "low",
+    },
+    warnings: [
+      {
+        code: "defaultMonthMarkerColumn",
+        message: "Month marker column defaults to index 0 until contextual mapping is fully implemented.",
+      },
+    ],
+    errors: [],
+  };
+
+  if (!Array.isArray(rows)) {
+    return {
+      ...result,
+      status: PARSER_STATUS.STOP,
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual rows must be an array.",
+        },
+      ],
+    };
+  }
+
+  const sectionRow = rows[CONTEXTUAL_ROWS.SECTION_HEADER_INDEX];
+  const fieldRow = rows[CONTEXTUAL_ROWS.FIELD_LABEL_INDEX];
+
+  if (!Array.isArray(sectionRow)) {
+    return {
+      ...result,
+      status: PARSER_STATUS.STOP,
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual section header row is missing.",
+        },
+      ],
+    };
+  }
+
+  if (!Array.isArray(fieldRow)) {
+    return {
+      ...result,
+      status: PARSER_STATUS.STOP,
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual field label row is missing.",
+        },
+      ],
+    };
+  }
+
+  const sectionContexts = buildSectionContext(sectionRow, fieldRow.length);
+
+  const dayMatch = findFieldColumn(fieldRow, result.required.day.field);
+  applyRequiredFieldMatch(result, "day", dayMatch);
+
+  const systemSalesMatch = findSectionFieldColumn(
+    sectionContexts,
+    fieldRow,
+    REQUIRED_CONTEXTUAL_FIELDS.systemSales.section,
+    REQUIRED_CONTEXTUAL_FIELDS.systemSales.field
+  );
+  applyRequiredFieldMatch(result, "systemSales", systemSalesMatch);
+
+  const outsideSystemSalesMatch = findSectionFieldColumn(
+    sectionContexts,
+    fieldRow,
+    REQUIRED_CONTEXTUAL_FIELDS.outsideSystemSales.section,
+    REQUIRED_CONTEXTUAL_FIELDS.outsideSystemSales.field
+  );
+  applyRequiredFieldMatch(result, "outsideSystemSales", outsideSystemSalesMatch);
+
+  applySupportingFieldMatch(
+    result,
+    "deviceCount",
+    findSectionFieldColumn(
+      sectionContexts,
+      fieldRow,
+      SUPPORTING_FIELDS.deviceCount.section,
+      SUPPORTING_FIELDS.deviceCount.field
+    )
+  );
+  applySupportingFieldMatch(result, "financeAmount", findFieldColumn(fieldRow, SUPPORTING_FIELDS.financeAmount.field));
+  applySupportingFieldMatch(result, "contractCount", findFieldColumn(fieldRow, SUPPORTING_FIELDS.contractCount.field));
+  applySupportingFieldMatch(result, "profit", findFieldColumn(fieldRow, SUPPORTING_FIELDS.profit.field));
+
+  const crossCheckMatch = findFieldColumn(fieldRow, CROSS_CHECK_FIELD.field);
+  if (crossCheckMatch.status === ROW_STATUS.OK) {
+    const conflictsWithRequiredSalesColumn = [
+      result.columns.systemSalesColumn,
+      result.columns.outsideSystemSalesColumn,
+    ].includes(crossCheckMatch.column);
+
+    if (conflictsWithRequiredSalesColumn) {
+      result.warnings.push({
+        code: ROW_STATUS.AMBIGUOUS_HEADER,
+        message: `Cross-check field "${CROSS_CHECK_FIELD.field}" conflicts with a required sales column and was ignored.`,
+      });
+    } else {
+      result.columns.csvTotalCrossCheckColumn = crossCheckMatch.column;
+      result.crossCheck = {
+        ...result.crossCheck,
+        column: crossCheckMatch.column,
+        matched: true,
+        confidence: "high",
+      };
+    }
+  } else if (crossCheckMatch.status === ROW_STATUS.AMBIGUOUS_HEADER) {
+    result.warnings.push({
+      code: ROW_STATUS.AMBIGUOUS_HEADER,
+      message: `Optional cross-check field "${CROSS_CHECK_FIELD.field}" matched multiple columns.`,
+    });
+  }
+
+  const missingRequired = Object.entries(result.required).filter(([, field]) => !field.matched && !field.ambiguous);
+  missingRequired.forEach(([key, field]) => {
+    result.errors.push({
+      code: ROW_STATUS.MISSING_REQUIRED_FIELD,
+      message: `Required contextual mapping "${key}" was not detected for field "${field.field}".`,
+    });
   });
+
+  if (result.errors.length > 0) {
+    result.status = PARSER_STATUS.STOP;
+    result.complete = false;
+  } else {
+    result.complete = true;
+    result.status = result.warnings.length > 0 ? PARSER_STATUS.WARNING : PARSER_STATUS.OK;
+  }
+
+  return result;
 }
 
 export function normalizeContextualRows(rows, mapping, options = {}) {
@@ -229,6 +421,131 @@ function parseContextualNumber(value, context = {}) {
     warnings: [],
     errors: [],
   };
+}
+
+function normalizeContextualLabel(value) {
+  if (value === null || value === undefined) return "";
+  return String(value).trim();
+}
+
+function buildSectionContext(sectionRow, length = sectionRow.length) {
+  const contexts = [];
+  let currentSection = "";
+
+  for (let index = 0; index < length; index += 1) {
+    const sectionLabel = normalizeContextualLabel(sectionRow[index]);
+    if (sectionLabel) currentSection = sectionLabel;
+    contexts[index] = currentSection;
+  }
+
+  return contexts;
+}
+
+function findFieldColumn(fieldRow, fieldLabel) {
+  const target = normalizeContextualLabel(fieldLabel);
+  const matches = fieldRow.reduce((columns, value, index) => {
+    if (normalizeContextualLabel(value) === target) columns.push(index);
+    return columns;
+  }, []);
+
+  if (matches.length === 1) {
+    return {
+      status: ROW_STATUS.OK,
+      column: matches[0],
+      matches,
+    };
+  }
+
+  if (matches.length > 1) {
+    return {
+      status: ROW_STATUS.AMBIGUOUS_HEADER,
+      column: null,
+      matches,
+    };
+  }
+
+  return {
+    status: ROW_STATUS.MISSING_REQUIRED_FIELD,
+    column: null,
+    matches,
+  };
+}
+
+function findSectionFieldColumn(sectionContexts, fieldRow, sectionLabel, fieldLabel) {
+  const targetSection = normalizeContextualLabel(sectionLabel);
+  const targetField = normalizeContextualLabel(fieldLabel);
+  const matches = fieldRow.reduce((columns, value, index) => {
+    const sectionMatches = normalizeContextualLabel(sectionContexts[index]) === targetSection;
+    const fieldMatches = normalizeContextualLabel(value) === targetField;
+    if (sectionMatches && fieldMatches) columns.push(index);
+    return columns;
+  }, []);
+
+  if (matches.length === 1) {
+    return {
+      status: ROW_STATUS.OK,
+      column: matches[0],
+      matches,
+    };
+  }
+
+  if (matches.length > 1) {
+    return {
+      status: ROW_STATUS.AMBIGUOUS_HEADER,
+      column: null,
+      matches,
+    };
+  }
+
+  return {
+    status: ROW_STATUS.MISSING_REQUIRED_FIELD,
+    column: null,
+    matches,
+  };
+}
+
+function applyRequiredFieldMatch(result, fieldKey, match) {
+  if (match.status === ROW_STATUS.OK) {
+    result.required[fieldKey] = {
+      ...result.required[fieldKey],
+      column: match.column,
+      matched: true,
+      confidence: "high",
+    };
+    result.columns[`${fieldKey}Column`] = match.column;
+    return;
+  }
+
+  if (match.status === ROW_STATUS.AMBIGUOUS_HEADER) {
+    result.required[fieldKey] = {
+      ...result.required[fieldKey],
+      ambiguous: true,
+    };
+    result.errors.push({
+      code: ROW_STATUS.AMBIGUOUS_HEADER,
+      message: `Required contextual mapping "${fieldKey}" matched multiple columns.`,
+    });
+  }
+}
+
+function applySupportingFieldMatch(result, fieldKey, match) {
+  if (match.status === ROW_STATUS.OK) {
+    result.supporting[fieldKey] = {
+      ...result.supporting[fieldKey],
+      column: match.column,
+      matched: true,
+      confidence: "high",
+    };
+    result.columns[`${fieldKey}Column`] = match.column;
+    return;
+  }
+
+  if (match.status === ROW_STATUS.AMBIGUOUS_HEADER) {
+    result.warnings.push({
+      code: ROW_STATUS.AMBIGUOUS_HEADER,
+      message: `Optional contextual mapping "${fieldKey}" matched multiple columns.`,
+    });
+  }
 }
 
 function parseThaiMonthMarker(value) {
