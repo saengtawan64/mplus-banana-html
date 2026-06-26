@@ -138,14 +138,34 @@ export function validateContextualTotals(rows, options = {}) {
 }
 
 function parseContextualNumber(value, context = {}) {
-  void value;
   void context;
 
-  return {
-    status: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+  const missingResult = {
+    status: ROW_STATUS.MISSING_REQUIRED_FIELD,
     value: null,
     warnings: [],
-    errors: [{ ...SKELETON_ERROR }],
+    errors: [],
+  };
+
+  if (value === null || value === undefined) return missingResult;
+
+  const cleaned = String(value)
+    .trim()
+    .replace(/,/g, "")
+    .replace(/฿/g, "")
+    .replace(/บาท/g, "")
+    .trim();
+
+  if (cleaned === "" || cleaned === "-") return missingResult;
+
+  const number = Number(cleaned);
+  if (Number.isNaN(number)) return missingResult;
+
+  return {
+    status: ROW_STATUS.OK,
+    value: number,
+    warnings: [],
+    errors: [],
   };
 }
 
