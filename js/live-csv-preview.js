@@ -15,6 +15,8 @@ function getPreviewElements() {
   return {
     panel: document.querySelector("#liveCsvPreviewPanel"),
     status: document.querySelector("#liveCsvPreviewStatus"),
+    table: document.querySelector("#liveCsvPreviewTable"),
+    rows: document.querySelector("#liveCsvPreviewRows"),
   };
 }
 
@@ -38,6 +40,68 @@ function renderPreviewStatus(state, details = {}) {
   status.textContent = lines.join(" | ");
 }
 
+function clearPreviewTable() {
+  const { table, rows } = getPreviewElements();
+  if (rows) rows.textContent = "";
+  if (table) table.hidden = true;
+}
+
+function formatPreviewDate(dateParts) {
+  if (!dateParts) return "ไม่มีข้อมูล";
+  return `${dateParts.day}/${dateParts.month}/${dateParts.buddhistYear}`;
+}
+
+function formatPreviewValue(field) {
+  if (!field || field.value === null || field.value === undefined) return "-";
+  return String(field.value);
+}
+
+function getPreviewNote(row, result) {
+  const notes = [];
+
+  if (!row.dateParts) notes.push("ไม่มีบริบทเดือน");
+  if (row.systemSales?.dataState !== "active") notes.push("ไม่มีข้อมูลยอดในระบบ");
+  if (row.outsideSystemSales?.dataState !== "active") notes.push("ไม่มีข้อมูลยอดนอกระบบ");
+  if (row.dataState === "invalid") notes.push("แถวนี้ยังไม่พร้อมใช้งาน");
+  if (result.status === "warning") notes.push("บางแถวมีข้อมูลไม่ครบ");
+
+  return notes.length > 0 ? notes.join(" / ") : "-";
+}
+
+function renderPreviewTable(result) {
+  const { table, rows } = getPreviewElements();
+  if (!table || !rows) return;
+
+  rows.textContent = "";
+
+  if (!Array.isArray(result.rows) || result.rows.length === 0 || result.status === "stop") {
+    table.hidden = true;
+    return;
+  }
+
+  result.rows.forEach((row) => {
+    const tr = document.createElement("tr");
+    const cells = [
+      formatPreviewDate(row.dateParts),
+      formatPreviewValue(row.systemSales),
+      formatPreviewValue(row.outsideSystemSales),
+      formatPreviewValue(row.totalSales),
+      row.dataState || "ตรวจไม่ได้",
+      getPreviewNote(row, result),
+    ];
+
+    cells.forEach((value) => {
+      const td = document.createElement("td");
+      td.textContent = value;
+      tr.appendChild(td);
+    });
+
+    rows.appendChild(tr);
+  });
+
+  table.hidden = false;
+}
+
 function getCacheBustedUrl(url) {
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}previewTs=${Date.now()}`;
@@ -58,6 +122,7 @@ async function loadLiveCsvPreview() {
   if (!panel) return;
 
   renderPreviewStatus("loading");
+  clearPreviewTable();
 
   try {
     const response = await fetch(getCacheBustedUrl(LIVE_CSV_URL), { cache: "no-store" });
@@ -85,12 +150,15 @@ async function loadLiveCsvPreview() {
     };
 
     if (result.status === "stop") {
+      clearPreviewTable();
       renderPreviewStatus("stop", details);
       return;
     }
 
+    renderPreviewTable(result);
     renderPreviewStatus("success", details);
   } catch (error) {
+    clearPreviewTable();
     renderPreviewStatus("failed", {
       fetchStatus: error instanceof Error ? error.message : "network error",
       checkedAt: new Date().toLocaleString("th-TH"),

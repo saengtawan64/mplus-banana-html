@@ -49,6 +49,26 @@
         <div id="liveCsvPreviewStatus" class="notice neutral" aria-live="polite">
           กำลังตรวจ CSV แบบ read-only...
         </div>
+        <div id="liveCsvPreviewTable" hidden>
+          <h3>ตาราง Preview จาก CSV</h3>
+          <p class="panel-kicker">Preview เท่านั้น ยังไม่แทนตาราง Dashboard ตัวอย่าง</p>
+          <p class="panel-kicker">ข้อมูล CSV ยังอยู่ในโหมด Preview / Dashboard ตัวอย่างยังไม่ถูกแทน / แหล่งข้อมูล: CSV Preview เท่านั้น</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>วันที่</th>
+                  <th>ยอดในระบบ</th>
+                  <th>ยอดนอกระบบ</th>
+                  <th>รวมยอดคำนวณ</th>
+                  <th>สถานะแถว</th>
+                  <th>หมายเหตุ</th>
+                </tr>
+              </thead>
+              <tbody id="liveCsvPreviewRows"></tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <section class="dashboard-summary" aria-label="สรุปยอดขายตัวอย่าง">
