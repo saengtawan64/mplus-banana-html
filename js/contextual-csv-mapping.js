@@ -121,20 +121,23 @@ export function parseContextualSalesCsv(rowsOrText, options = {}) {
     errors: [],
   };
 
-  if (typeof rowsOrText === "string") {
-    return {
-      ...result,
-      inputType: "text",
-      errors: [
-        {
-          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
-          message: "Contextual CSV text parsing is not approved yet.",
-        },
-      ],
-    };
-  }
+  let inputType = "rows";
+  let rows = rowsOrText;
+  let textParseResult = null;
 
-  if (!Array.isArray(rowsOrText)) {
+  if (typeof rowsOrText === "string") {
+    inputType = "text";
+    textParseResult = parseContextualCsvText(rowsOrText);
+    if (textParseResult.status === PARSER_STATUS.STOP) {
+      return {
+        ...result,
+        inputType,
+        warnings: textParseResult.warnings.slice(),
+        errors: textParseResult.errors.slice(),
+      };
+    }
+    rows = textParseResult.rows;
+  } else if (!Array.isArray(rowsOrText)) {
     return {
       ...result,
       errors: [
@@ -146,18 +149,18 @@ export function parseContextualSalesCsv(rowsOrText, options = {}) {
     };
   }
 
-  const mapping = detectContextualMapping(rowsOrText, options);
+  const mapping = detectContextualMapping(rows, options);
   if (mapping.status === PARSER_STATUS.STOP) {
     return {
       ...result,
-      inputType: "rows",
+      inputType,
       mapping,
-      warnings: mapping.warnings.slice(),
-      errors: mapping.errors.slice(),
+      warnings: [...(textParseResult?.warnings || []), ...mapping.warnings],
+      errors: [...(textParseResult?.errors || []), ...mapping.errors],
     };
   }
 
-  const normalized = normalizeContextualRows(rowsOrText, mapping, options);
+  const normalized = normalizeContextualRows(rows, mapping, options);
   const status = normalized.status === PARSER_STATUS.WARNING || mapping.status === PARSER_STATUS.WARNING
     ? PARSER_STATUS.WARNING
     : PARSER_STATUS.OK;
@@ -165,7 +168,7 @@ export function parseContextualSalesCsv(rowsOrText, options = {}) {
   return {
     ...result,
     status,
-    inputType: "rows",
+    inputType,
     rows: normalized.rows,
     mapping,
     normalized,
@@ -174,8 +177,135 @@ export function parseContextualSalesCsv(rowsOrText, options = {}) {
       draftRowsSummary: normalized.draftRowsSummary,
       totalSalesSummary: normalized.totalSalesSummary,
     },
-    warnings: [...mapping.warnings, ...normalized.warnings],
-    errors: normalized.errors.slice(),
+    warnings: [...(textParseResult?.warnings || []), ...mapping.warnings, ...normalized.warnings],
+    errors: [...(textParseResult?.errors || []), ...normalized.errors],
+  };
+}
+
+function parseContextualCsvText(text) {
+  const result = {
+    status: PARSER_STATUS.OK,
+    rows: [],
+    warnings: [],
+    errors: [],
+  };
+
+  if (typeof text !== "string" || text.trim() === "") {
+    return {
+      ...result,
+      status: PARSER_STATUS.STOP,
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual CSV text is blank or empty.",
+        },
+      ],
+    };
+  }
+
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let inQuotes = false;
+  let closedQuote = false;
+  let endedWithLineBreak = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    const nextChar = text[index + 1];
+
+    if (inQuotes) {
+      if (char === "\"") {
+        if (nextChar === "\"") {
+          cell += "\"";
+          index += 1;
+        } else {
+          inQuotes = false;
+          closedQuote = true;
+        }
+      } else {
+        cell += char;
+      }
+      endedWithLineBreak = false;
+      continue;
+    }
+
+    if (closedQuote && char !== "," && char !== "\n" && char !== "\r") {
+      return {
+        ...result,
+        status: PARSER_STATUS.STOP,
+        errors: [
+          {
+            code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+            message: "Contextual CSV text is malformed or unsupported.",
+          },
+        ],
+      };
+    }
+
+    if (char === "\"") {
+      if (cell === "") {
+        inQuotes = true;
+        endedWithLineBreak = false;
+        continue;
+      }
+
+      return {
+        ...result,
+        status: PARSER_STATUS.STOP,
+        errors: [
+          {
+            code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+            message: "Contextual CSV text is malformed or unsupported.",
+          },
+        ],
+      };
+    }
+
+    if (char === ",") {
+      row.push(cell);
+      cell = "";
+      closedQuote = false;
+      endedWithLineBreak = false;
+      continue;
+    }
+
+    if (char === "\n" || char === "\r") {
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = "";
+      closedQuote = false;
+      endedWithLineBreak = true;
+      if (char === "\r" && nextChar === "\n") index += 1;
+      continue;
+    }
+
+    cell += char;
+    endedWithLineBreak = false;
+  }
+
+  if (inQuotes) {
+    return {
+      ...result,
+      status: PARSER_STATUS.STOP,
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual CSV text is malformed or unsupported.",
+        },
+      ],
+    };
+  }
+
+  if (!endedWithLineBreak || cell !== "" || row.length > 0) {
+    row.push(cell);
+    rows.push(row);
+  }
+
+  return {
+    ...result,
+    rows,
   };
 }
 
