@@ -170,16 +170,39 @@ function parseContextualNumber(value, context = {}) {
 }
 
 function parseThaiMonthMarker(value) {
-  void value;
-
-  return {
-    status: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+  const label = String(value || "").trim().replace(/\s+/g, " ");
+  const invalidResult = {
+    status: ROW_STATUS.INVALID_DATE,
     month: null,
     buddhistYear: null,
     gregorianYear: null,
-    label: "",
+    label,
     warnings: [],
-    errors: [{ ...SKELETON_ERROR }],
+    errors: [
+      {
+        code: ROW_STATUS.INVALID_DATE,
+        message: "Invalid Thai month marker.",
+      },
+    ],
+  };
+
+  if (!label) return invalidResult;
+
+  const match = label.match(/^เดือน\s+(.+?)\s+(\d{4})$/);
+  if (!match) return invalidResult;
+
+  const month = THAI_MONTHS[match[1]];
+  const buddhistYear = Number(match[2]);
+  if (!month || Number.isNaN(buddhistYear)) return invalidResult;
+
+  return {
+    status: ROW_STATUS.OK,
+    month,
+    buddhistYear,
+    gregorianYear: buddhistYear - 543,
+    label,
+    warnings: [],
+    errors: [],
   };
 }
 
