@@ -328,6 +328,7 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
     skippedRows: [],
     invalidRows: [],
     monthMarkers: [],
+    salesPreviewSummary: createSalesPreviewReviewSummary([]),
     warnings: [],
     errors: [],
   };
@@ -379,6 +380,8 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
       message: "Some contextual rows could not be classified.",
     });
   }
+
+  result.salesPreviewSummary = createSalesPreviewReviewSummary(result.dailyCandidates);
 
   return result;
 }
@@ -473,6 +476,41 @@ function readPreviewNumber(rawRow, column) {
     warnings: parsed.warnings.slice(),
     errors: parsed.errors.slice(),
   };
+}
+
+function createSalesPreviewReviewSummary(dailyCandidates) {
+  const summary = {
+    reviewOnly: true,
+    dailyCandidateCount: dailyCandidates.length,
+    previewReadableCount: 0,
+    systemSalesReadableCount: 0,
+    outsideSystemSalesReadableCount: 0,
+    systemSalesMissingCount: 0,
+    outsideSystemSalesMissingCount: 0,
+    rowsWithoutMonthContextCount: 0,
+    warnings: [],
+    errors: [],
+  };
+
+  dailyCandidates.forEach((candidate) => {
+    const systemSalesReadable = isReadablePreviewValue(candidate.salesPreview?.systemSales);
+    const outsideSystemSalesReadable = isReadablePreviewValue(candidate.salesPreview?.outsideSystemSales);
+
+    if (systemSalesReadable) summary.systemSalesReadableCount += 1;
+    else summary.systemSalesMissingCount += 1;
+
+    if (outsideSystemSalesReadable) summary.outsideSystemSalesReadableCount += 1;
+    else summary.outsideSystemSalesMissingCount += 1;
+
+    if (systemSalesReadable && outsideSystemSalesReadable) summary.previewReadableCount += 1;
+    if (!candidate.monthContext) summary.rowsWithoutMonthContextCount += 1;
+  });
+
+  return summary;
+}
+
+function isReadablePreviewValue(previewField) {
+  return previewField?.status === ROW_STATUS.OK;
 }
 
 function createClassificationMapping(mapping = {}) {
