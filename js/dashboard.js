@@ -295,14 +295,14 @@ async function loadDashboard() {
 
   if (result.status !== "ok") {
     status.className = "notice warn";
-    status.textContent = `${result.message} ยังไม่เชื่อม CSV จริง กำลังแสดงข้อมูลตัวอย่างสำหรับตรวจรูปแบบ Dashboard เท่านั้น`;
+    status.textContent = `${result.message} ยังไม่เชื่อม CSV จริง กำลังแสดงข้อมูลตัวอย่างสำหรับต้นแบบ Phase 1`;
   } else {
     const headers = Object.keys(result.rows[0] || {});
     const mapping = detectMapping(headers);
 
     if (!mapping.complete) {
       status.className = "notice warn";
-      status.textContent = `ยังจับคู่หัวคอลัมน์ไม่ครบ: ${mapping.missing.join(", ")} ข้อมูลที่ขาดจะถือว่าไม่พบข้อมูล ไม่ใช่ค่า 0 กำลังแสดงข้อมูลตัวอย่างสำหรับตรวจรูปแบบ Dashboard เท่านั้น`;
+      status.textContent = `ยังจับคู่หัวคอลัมน์ไม่ครบ: ${mapping.missing.join(", ")} ข้อมูลที่ขาดจะถือว่าไม่พบข้อมูล ไม่ใช่ค่า 0 กำลังแสดงข้อมูลตัวอย่างสำหรับต้นแบบ Phase 1`;
     } else {
       const mappedRows = mapRows(result.rows, mapping);
       const safeRows = mappedRows.filter((row) => calculateSales(row).status === "ok");
@@ -313,7 +313,7 @@ async function loadDashboard() {
         useSampleVisuals = false;
       } else {
         status.className = "notice warn";
-        status.textContent = "โหลด CSV แล้ว แต่ไม่พบแถวที่ใช้คำนวณยอดขายได้ ข้อมูลที่ขาดถือว่าไม่พบข้อมูล ไม่ใช่ค่า 0 กำลังแสดงข้อมูลตัวอย่างสำหรับตรวจรูปแบบ Dashboard เท่านั้น";
+        status.textContent = "โหลด CSV แล้ว แต่ไม่พบแถวที่ใช้คำนวณยอดขายได้ ข้อมูลที่ขาดถือว่าไม่พบข้อมูล ไม่ใช่ค่า 0 กำลังแสดงข้อมูลตัวอย่างสำหรับต้นแบบ Phase 1";
       }
     }
   }

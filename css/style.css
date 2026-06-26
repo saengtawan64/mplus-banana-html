@@ -1061,6 +1061,13 @@ td:nth-child(5) {
   margin-top: var(--space-1);
 }
 
+.dashboard-table-hint {
+  margin: 0 0 var(--space-2);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 760;
+}
+
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .app-header,
   .bottom-nav,
@@ -1136,7 +1143,7 @@ td:nth-child(5) {
 
 @media (max-width: 720px) {
   body.has-bottom-nav {
-    padding-bottom: 104px;
+    padding-bottom: 128px;
   }
 
   .bottom-nav {
@@ -1190,6 +1197,21 @@ td:nth-child(5) {
   .bottom-nav a[aria-current="page"]::before {
     background: var(--banana);
   }
+
+  .app-header {
+    min-height: auto;
+    padding-bottom: 8px;
+  }
+
+  .top-nav a {
+    min-height: 32px;
+    padding: 7px 10px;
+    font-size: 0.78rem;
+  }
+
+  .dashboard-shell {
+    padding-bottom: 132px;
+  }
 }
 
 @media (max-width: 560px) {
@@ -1239,7 +1261,26 @@ td:nth-child(5) {
   .mini-bars {
     grid-template-columns: repeat(6, minmax(78px, 1fr));
     overflow-x: auto;
+    min-height: 185px;
     padding-bottom: var(--space-2);
+  }
+
+  .mini-bar-item {
+    min-height: 170px;
+  }
+
+  .mini-bar-track {
+    min-height: 112px;
+  }
+
+  .dashboard-shell table {
+    min-width: 680px;
+  }
+
+  .dashboard-shell th,
+  .dashboard-shell td {
+    padding: 10px 11px;
+    font-size: 0.82rem;
   }
 
   .dashboard-shell .panel-header {
