@@ -329,6 +329,7 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
     invalidRows: [],
     monthMarkers: [],
     salesPreviewSummary: createSalesPreviewReviewSummary([]),
+    draftRowsSummary: createNormalizedDraftRowsReviewSummary([]),
     warnings: [],
     errors: [],
   };
@@ -383,6 +384,7 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
 
   result.salesPreviewSummary = createSalesPreviewReviewSummary(result.dailyCandidates);
   result.rows = createNormalizedDailySalesRows(result.dailyCandidates);
+  result.draftRowsSummary = createNormalizedDraftRowsReviewSummary(result.rows);
 
   return result;
 }
@@ -574,6 +576,32 @@ function createDraftSalesValue(previewField) {
     sourceColumn: typeof previewField?.column === "number" ? previewField.column : null,
     status: previewField?.status || ROW_STATUS.MISSING_REQUIRED_FIELD,
   };
+}
+
+function createNormalizedDraftRowsReviewSummary(rows) {
+  const summary = {
+    reviewOnly: true,
+    draftRowCount: rows.length,
+    activeDraftRowCount: 0,
+    missingDraftRowCount: 0,
+    invalidDraftRowCount: 0,
+    rowsWithoutDatePartsCount: 0,
+    systemSalesMissingCount: 0,
+    outsideSystemSalesMissingCount: 0,
+    warnings: [],
+    errors: [],
+  };
+
+  rows.forEach((row) => {
+    if (row.dataState === DATA_STATE.ACTIVE) summary.activeDraftRowCount += 1;
+    if (row.dataState === DATA_STATE.MISSING) summary.missingDraftRowCount += 1;
+    if (row.dataState === DATA_STATE.INVALID) summary.invalidDraftRowCount += 1;
+    if (!row.dateParts) summary.rowsWithoutDatePartsCount += 1;
+    if (row.systemSales?.dataState !== DATA_STATE.ACTIVE) summary.systemSalesMissingCount += 1;
+    if (row.outsideSystemSales?.dataState !== DATA_STATE.ACTIVE) summary.outsideSystemSalesMissingCount += 1;
+  });
+
+  return summary;
 }
 
 function createClassificationMapping(mapping = {}) {
