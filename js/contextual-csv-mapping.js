@@ -547,6 +547,7 @@ function createNormalizedDailySalesDraft(candidate) {
     : systemSales.dataState === DATA_STATE.ACTIVE && outsideSystemSales.dataState === DATA_STATE.ACTIVE
       ? DATA_STATE.ACTIVE
       : DATA_STATE.MISSING;
+  const totalSales = createDraftTotalSales(systemSales, outsideSystemSales, dataState);
 
   return {
     reviewOnly: true,
@@ -564,6 +565,7 @@ function createNormalizedDailySalesDraft(candidate) {
     dataState,
     systemSales,
     outsideSystemSales,
+    totalSales,
     warnings,
     errors,
   };
@@ -575,6 +577,30 @@ function createDraftSalesValue(previewField) {
     dataState: previewField?.status === ROW_STATUS.OK ? DATA_STATE.ACTIVE : DATA_STATE.MISSING,
     sourceColumn: typeof previewField?.column === "number" ? previewField.column : null,
     status: previewField?.status || ROW_STATUS.MISSING_REQUIRED_FIELD,
+  };
+}
+
+function createDraftTotalSales(systemSales, outsideSystemSales, rowDataState) {
+  const canCalculateTotal = rowDataState !== DATA_STATE.INVALID
+    && systemSales.dataState === DATA_STATE.ACTIVE
+    && outsideSystemSales.dataState === DATA_STATE.ACTIVE;
+
+  if (!canCalculateTotal) {
+    return {
+      value: null,
+      dataState: DATA_STATE.MISSING,
+      status: ROW_STATUS.MISSING_REQUIRED_FIELD,
+      formula: "systemSales + outsideSystemSales",
+      reviewOnly: true,
+    };
+  }
+
+  return {
+    value: systemSales.value + outsideSystemSales.value,
+    dataState: DATA_STATE.ACTIVE,
+    status: ROW_STATUS.OK,
+    formula: "systemSales + outsideSystemSales",
+    reviewOnly: true,
   };
 }
 
