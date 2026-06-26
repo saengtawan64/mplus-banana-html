@@ -218,3 +218,57 @@ Review this document.
 If approved, the next safe step is documentation-only commit of this file.
 
 After that, the next technical proposal should be a local-only CSV text parser plan, still without live CSV integration.
+
+## CSV Preview Table Live Smoke Check
+
+Status: PASS  
+Scope: live smoke test only  
+Expected feature commit: `5d3abfa feat: add csv preview table`  
+Live URL tested: `https://mplus-banana-html.saengtawan64.workers.dev/dashboard.html`  
+Cloudflare normalized path: `/dashboard`
+
+No redeploy was performed. Cloudflare Dashboard commit metadata was not visible due sign-in, but live behavior confirmed the CSV preview table feature was active.
+
+### Key Live Results
+
+- Dashboard loaded.
+- Sample/prototype warning remained visible.
+- Hero/cards/charts/original daily table remained sample data.
+- Live CSV preview panel was visible.
+- CSV preview table was visible inside the preview area.
+- Heading `ตาราง Preview จาก CSV` was visible.
+- Preview-only labels were visible.
+- Preview table columns rendered.
+- Preview rows rendered: `361`.
+- Preview panel reached:
+  - `Fetch: success`
+  - `Parser: warning`
+  - `Draft rows: 361`
+  - `Warnings: 2`
+  - `Errors: 0`
+- Missing values displayed as `-` / missing text.
+- Real `0` displayed as `0`.
+- Desktop smoke: PASS.
+- Mobile smoke: PASS at about `390x844`.
+- Preview table horizontal scroll worked.
+- No blocking console errors were observed.
+
+### Guardrails Confirmed
+
+- Dashboard sample data remained unchanged.
+- `#dailySalesRows` remained the original dashboard table.
+- No parser rows replaced dashboard metrics/cards/charts/table.
+- Preview rows remained isolated under `#liveCsvPreviewTable` / `#liveCsvPreviewRows`.
+- No file changes after smoke.
+- No new commit/push during smoke.
+- No Firebase/Auth/backend/API.
+- No AI/Chat/Stock/PDF/Excel.
+- CSV preview table is still not official dashboard data.
+
+### Still Not Approved
+
+- No dashboard replacement with CSV data yet.
+- No hero/card/chart replacement yet.
+- No CSV `ยอดรวม` validation yet.
+- No production financial reporting.
+- No official dashboard numbers from live CSV yet.
