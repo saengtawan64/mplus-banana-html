@@ -125,15 +125,69 @@ export function detectContextualMapping(rows, options = {}) {
 }
 
 export function normalizeContextualRows(rows, mapping, options = {}) {
-  void rows;
-  void mapping;
   void options;
 
-  return skeletonStopResult({
+  const result = {
+    status: PARSER_STATUS.OK,
     rows: [],
+    classifiedRows: [],
+    dailyCandidates: [],
     excludedRows: [],
     skippedRows: [],
+    invalidRows: [],
+    monthMarkers: [],
+    warnings: [],
+    errors: [],
+  };
+
+  if (!Array.isArray(rows)) {
+    return {
+      ...result,
+      status: PARSER_STATUS.STOP,
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual rows must be an array.",
+        },
+      ],
+    };
+  }
+
+  let currentMonthContext = null;
+
+  rows.forEach((row, index) => {
+    const classification = classifyContextualRow(row, { sourceRowNumber: index + 1 }, mapping);
+    const classifiedRow = {
+      ...classification,
+      monthContext: currentMonthContext,
+    };
+
+    if (classification.rowType === CONTEXTUAL_ROW_TYPE.MONTH_MARKER) {
+      currentMonthContext = classification.monthMarker;
+      classifiedRow.monthContext = currentMonthContext;
+      result.monthMarkers.push(classifiedRow);
+    } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.DAILY_CANDIDATE) {
+      result.dailyCandidates.push(classifiedRow);
+    } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.MONTHLY_SUMMARY) {
+      result.excludedRows.push(classifiedRow);
+    } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.BLANK) {
+      result.skippedRows.push(classifiedRow);
+    } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.INVALID) {
+      result.invalidRows.push(classifiedRow);
+    }
+
+    result.classifiedRows.push(classifiedRow);
   });
+
+  if (result.invalidRows.length > 0) {
+    result.status = PARSER_STATUS.WARNING;
+    result.warnings.push({
+      code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+      message: "Some contextual rows could not be classified.",
+    });
+  }
+
+  return result;
 }
 
 export function validateContextualTotals(rows, options = {}) {
