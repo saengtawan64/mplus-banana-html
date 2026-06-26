@@ -346,9 +346,10 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
   }
 
   let currentMonthContext = null;
+  const classificationMapping = createClassificationMapping(mapping);
 
   rows.forEach((row, index) => {
-    const classification = classifyContextualRow(row, { sourceRowNumber: index + 1 }, mapping);
+    const classification = classifyContextualRow(row, { sourceRowNumber: index + 1 }, classificationMapping);
     const classifiedRow = {
       ...classification,
       monthContext: currentMonthContext,
@@ -359,7 +360,7 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
       classifiedRow.monthContext = currentMonthContext;
       result.monthMarkers.push(classifiedRow);
     } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.DAILY_CANDIDATE) {
-      result.dailyCandidates.push(classifiedRow);
+      result.dailyCandidates.push(createDailyCandidateMetadata(classifiedRow, row, mapping));
     } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.MONTHLY_SUMMARY) {
       result.excludedRows.push(classifiedRow);
     } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.BLANK) {
@@ -421,6 +422,47 @@ function parseContextualNumber(value, context = {}) {
     warnings: [],
     errors: [],
   };
+}
+
+function createDailyCandidateMetadata(classifiedRow, rawRow, mapping = {}) {
+  return {
+    sourceRowNumber: classifiedRow.sourceRowNumber,
+    rowType: classifiedRow.rowType,
+    status: classifiedRow.status,
+    dataState: classifiedRow.dataState,
+    day: classifiedRow.day,
+    monthContext: classifiedRow.monthContext,
+    mappingSnapshot: createMappingSnapshot(mapping),
+    rawRow: Array.isArray(rawRow) ? rawRow.slice() : [],
+    warnings: classifiedRow.warnings.slice(),
+    errors: classifiedRow.errors.slice(),
+  };
+}
+
+function createClassificationMapping(mapping = {}) {
+  return {
+    ...mapping,
+    ...(mapping.columns || {}),
+  };
+}
+
+function createMappingSnapshot(mapping = {}) {
+  const columns = mapping.columns || mapping;
+  return {
+    dayColumn: readMappingColumn(columns, "dayColumn"),
+    monthMarkerColumn: readMappingColumn(columns, "monthMarkerColumn"),
+    systemSalesColumn: readMappingColumn(columns, "systemSalesColumn"),
+    outsideSystemSalesColumn: readMappingColumn(columns, "outsideSystemSalesColumn"),
+    deviceCountColumn: readMappingColumn(columns, "deviceCountColumn"),
+    financeAmountColumn: readMappingColumn(columns, "financeAmountColumn"),
+    contractCountColumn: readMappingColumn(columns, "contractCountColumn"),
+    profitColumn: readMappingColumn(columns, "profitColumn"),
+    csvTotalCrossCheckColumn: readMappingColumn(columns, "csvTotalCrossCheckColumn"),
+  };
+}
+
+function readMappingColumn(columns, key) {
+  return typeof columns?.[key] === "number" ? columns[key] : null;
 }
 
 function normalizeContextualLabel(value) {
