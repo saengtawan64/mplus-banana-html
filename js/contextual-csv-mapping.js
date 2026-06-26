@@ -87,6 +87,14 @@ const SKELETON_ERROR = Object.freeze({
   message: "Contextual CSV parser skeleton only. Implementation not approved.",
 });
 
+const CONTEXTUAL_ROW_TYPE = Object.freeze({
+  BLANK: "blank",
+  MONTH_MARKER: "monthMarker",
+  MONTHLY_SUMMARY: "monthlySummary",
+  DAILY_CANDIDATE: "dailyCandidate",
+  INVALID: "invalid",
+});
+
 function skeletonStopResult(extra = {}) {
   return {
     status: PARSER_STATUS.STOP,
@@ -255,15 +263,90 @@ function isMonthlySummaryRow(row, mapping = {}) {
 }
 
 function classifyContextualRow(row, context = {}, mapping = {}) {
-  void row;
-  void context;
-  void mapping;
+  const sourceRowNumber = context.sourceRowNumber ?? null;
+  const baseResult = {
+    day: null,
+    monthMarker: null,
+    sourceRowNumber,
+    warnings: [],
+    errors: [],
+  };
+
+  if (!Array.isArray(row)) {
+    return {
+      ...baseResult,
+      status: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+      dataState: DATA_STATE.INVALID,
+      rowType: CONTEXTUAL_ROW_TYPE.INVALID,
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual row must be an array.",
+        },
+      ],
+    };
+  }
+
+  if (isBlankContextualRow(row)) {
+    return {
+      ...baseResult,
+      status: ROW_STATUS.OK,
+      dataState: DATA_STATE.NO_DATA,
+      rowType: CONTEXTUAL_ROW_TYPE.BLANK,
+    };
+  }
+
+  if (isMonthMarkerRow(row, mapping)) {
+    const monthMarkerColumn = typeof mapping.monthMarkerColumn === "number" ? mapping.monthMarkerColumn : 0;
+    return {
+      ...baseResult,
+      status: ROW_STATUS.OK,
+      dataState: DATA_STATE.ACTIVE,
+      rowType: CONTEXTUAL_ROW_TYPE.MONTH_MARKER,
+      monthMarker: parseThaiMonthMarker(row[monthMarkerColumn]),
+    };
+  }
+
+  const monthMarkerColumn = typeof mapping.monthMarkerColumn === "number" ? mapping.monthMarkerColumn : 0;
+  const monthMarkerCell = row[monthMarkerColumn];
+  if (String(monthMarkerCell ?? "").trim().startsWith("เดือน")) {
+    const monthMarker = parseThaiMonthMarker(monthMarkerCell);
+    return {
+      ...baseResult,
+      status: ROW_STATUS.INVALID_DATE,
+      dataState: DATA_STATE.INVALID,
+      rowType: CONTEXTUAL_ROW_TYPE.INVALID,
+      monthMarker,
+      errors: monthMarker.errors,
+    };
+  }
+
+  if (isMonthlySummaryRow(row, mapping)) {
+    return {
+      ...baseResult,
+      status: ROW_STATUS.OK,
+      dataState: DATA_STATE.NO_DATA,
+      rowType: CONTEXTUAL_ROW_TYPE.MONTHLY_SUMMARY,
+    };
+  }
+
+  const dayColumn = typeof mapping.dayColumn === "number" ? mapping.dayColumn : 1;
+  const dayResult = parseContextualDay(row[dayColumn]);
+  if (dayResult.status === ROW_STATUS.OK) {
+    return {
+      ...baseResult,
+      status: ROW_STATUS.OK,
+      dataState: DATA_STATE.ACTIVE,
+      rowType: CONTEXTUAL_ROW_TYPE.DAILY_CANDIDATE,
+      day: dayResult.day,
+    };
+  }
 
   return {
-    status: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+    ...baseResult,
+    status: ROW_STATUS.INVALID_DATE,
     dataState: DATA_STATE.INVALID,
-    rowType: "unsupported",
-    warnings: [],
-    errors: [{ ...SKELETON_ERROR }],
+    rowType: CONTEXTUAL_ROW_TYPE.INVALID,
+    errors: dayResult.errors,
   };
 }
