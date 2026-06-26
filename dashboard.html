@@ -12,77 +12,116 @@
       <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
-    <main class="page-shell">
-      <section class="topbar-card" aria-label="บริบทยอดขาย">
-        <div>
-          <h2>ภาพรวมยอดขายสาขา</h2>
-          <p class="panel-kicker">หน้านี้เป็นต้นแบบ Phase 1 สำหรับทดลองใช้งาน ยังไม่ใช่ระบบจริง และยังไม่เชื่อม Published CSV จริง</p>
-        </div>
-        <div class="topbar-meta">
-          <span class="pill yellow">HTML Quick Version</span>
-          <span class="pill gray">มุมมองทดลองเท่านั้น</span>
-        </div>
-      </section>
-
-      <section class="page-heading">
+    <main class="page-shell dashboard-shell">
+      <section class="dashboard-topbar" aria-label="บริบทยอดขาย">
         <div>
           <p class="eyebrow">ยอดขาย</p>
           <h1>ภาพรวมยอดขาย</h1>
           <p class="page-subtitle">ยอดขายรวม = ยอดในระบบ + ยอดนอกระบบเท่านั้น</p>
         </div>
-        <button class="button primary" id="refreshData" type="button">ตรวจสถานะ CSV</button>
-      </section>
-
-      <section class="filter-bar" aria-label="ตัวกรองยอดขาย">
-        <label>สาขา <select id="branchFilter"></select></label>
-        <label>เดือน <input id="periodFilter" type="month"></label>
-        <label>ช่องทาง
-          <select id="channelFilter">
-            <option value="all">ยอดขายทั้งหมด</option>
-            <option value="system">ยอดในระบบ</option>
-            <option value="outside">ยอดนอกระบบ</option>
-          </select>
-        </label>
+        <div class="dashboard-context">
+          <label>สาขา <select id="branchFilter"></select></label>
+          <label>เดือน <input id="periodFilter" type="month"></label>
+          <label>มุมมอง
+            <select id="channelFilter">
+              <option value="all">ยอดขายทั้งหมด</option>
+              <option value="system">ยอดในระบบ</option>
+              <option value="outside">ยอดนอกระบบ</option>
+            </select>
+          </label>
+          <button class="button primary" id="refreshData" type="button">ตรวจสถานะ CSV</button>
+        </div>
       </section>
 
       <div id="dataStatus" class="notice neutral"></div>
 
-      <div class="notice warn">
-        ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV
+      <div class="notice warn dashboard-warning">
+        ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV หน้านี้เป็นต้นแบบ Phase 1 สำหรับทดลองใช้งาน ยังไม่ใช่ระบบจริง
       </div>
 
-      <div class="action-row" aria-label="เมนูเสริมของหน้ายอดขาย">
-        <a class="button" href="compare.html">เปรียบเทียบยอดขาย</a>
-        <a class="button" href="mapping.html">ตรวจหัวคอลัมน์</a>
-        <a class="button" href="export.html">คัดลอกสรุป</a>
-      </div>
+      <section class="dashboard-summary" aria-label="สรุปยอดขายตัวอย่าง">
+        <article class="metric-card dashboard-hero-card" id="totalSalesCard"></article>
+        <div class="dashboard-secondary-cards" id="salesBreakdownCards"></div>
+      </section>
 
-      <section class="metric-grid" id="dashboardCards" aria-label="ตัวเลขยอดขาย"></section>
-
-      <section class="two-column">
-        <article class="panel">
+      <section class="dashboard-grid">
+        <article class="panel support-panel">
           <div class="panel-header">
             <div>
-              <h2>กราฟตัวอย่าง: แนวโน้มยอดขาย</h2>
-              <p class="panel-kicker">แสดงเฉพาะยอดในระบบและยอดนอกระบบ</p>
+              <h2>ข้อมูลประกอบ</h2>
+              <p class="panel-kicker">ข้อมูลประกอบ — ไม่รวมในยอดขายรวม</p>
             </div>
           </div>
-          <div class="chart-frame">
-            <canvas id="salesTrendChart" height="220"></canvas>
-          </div>
+          <div class="support-metrics" id="supportMetrics"></div>
         </article>
-        <article class="panel">
+
+        <article class="panel target-panel">
           <div class="panel-header">
             <div>
-              <h2>กราฟตัวอย่าง: สัดส่วนยอดขาย</h2>
-              <p class="panel-kicker">ยอดจัด สัญญา และกำไรเป็นข้อมูลประกอบ ไม่รวมในยอดขายรวม</p>
+              <h2>ความคืบหน้าแบรนด์โฟกัส</h2>
+              <p class="panel-kicker">ระดับสาขาเท่านั้น ไม่ใช่ยอดขายรายบุคคล และไม่ใช้คำนวณค่าคอมมิชชั่น</p>
             </div>
           </div>
-          <div class="chart-frame">
-            <canvas id="salesMixChart" height="220"></canvas>
-          </div>
+          <div class="target-progress-list" id="focusProgress"></div>
         </article>
       </section>
+
+      <section class="panel recent-panel">
+        <div class="panel-header">
+          <div>
+            <h2>ยอดขาย 6 วันล่าสุด</h2>
+            <p class="panel-kicker">กราฟแท่ง HTML จากข้อมูลตัวอย่างเท่านั้น</p>
+          </div>
+        </div>
+        <div class="mini-bars" id="recentSalesBars" aria-label="ยอดขายตัวอย่าง 6 วันล่าสุด"></div>
+      </section>
+
+      <section class="panel monthly-panel">
+        <div class="panel-header">
+          <div>
+            <h2>กราฟตัวอย่าง: เปรียบเทียบรายเดือน</h2>
+            <p class="panel-kicker">เลือกดูยอดรวม ยอดในระบบ หรือยอดนอกระบบ โดยไม่รวมข้อมูลประกอบในยอดขายรวม</p>
+          </div>
+          <div class="segmented-control" role="tablist" aria-label="เลือกตัวชี้วัดกราฟรายเดือน">
+            <button class="segment-button active" type="button" data-monthly-metric="total" aria-selected="true">ยอดรวม</button>
+            <button class="segment-button" type="button" data-monthly-metric="system" aria-selected="false">ในระบบ</button>
+            <button class="segment-button" type="button" data-monthly-metric="outside" aria-selected="false">นอกระบบ</button>
+          </div>
+        </div>
+        <div class="chart-frame">
+          <canvas id="monthlyCompareChart" height="260"></canvas>
+          <p class="chart-fallback" id="monthlyChartFallback">ถ้าโหลด Chart.js จาก CDN ไม่ได้ ส่วนการ์ด ตาราง และกราฟแท่งตัวอย่างยังใช้งานได้</p>
+        </div>
+      </section>
+
+      <section class="panel daily-panel">
+        <div class="panel-header">
+          <div>
+            <h2>ตารางยอดขายรายวัน</h2>
+            <p class="panel-kicker">ค่า 0 ที่มีอยู่จริงแสดงเป็น 0 ปกติ / ข้อมูลหายแสดงเป็นไม่พบข้อมูล</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>วันที่</th>
+                <th>ยอดรวม</th>
+                <th>ในระบบ</th>
+                <th>นอกระบบ</th>
+                <th>เปลี่ยนแปลง</th>
+              </tr>
+            </thead>
+            <tbody id="dailySalesRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="action-row dashboard-actions" aria-label="เมนูเสริมของหน้ายอดขาย">
+        <a class="button" href="export.html">คัดลอกสรุป</a>
+        <a class="button" href="reports.html">รายงาน</a>
+        <a class="button" href="compare.html">เปรียบเทียบ</a>
+      </div>
     </main>
 
     <script type="module" src="js/dashboard.js"></script>
