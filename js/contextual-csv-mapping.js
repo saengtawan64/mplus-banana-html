@@ -206,9 +206,45 @@ function parseThaiMonthMarker(value) {
   };
 }
 
+function parseContextualDay(value) {
+  const invalidResult = {
+    status: ROW_STATUS.INVALID_DATE,
+    day: null,
+    warnings: [],
+    errors: [
+      {
+        code: ROW_STATUS.INVALID_DATE,
+        message: "Invalid contextual day.",
+      },
+    ],
+  };
+
+  if (value === null || value === undefined) return invalidResult;
+
+  const cleaned = String(value).trim();
+  if (!/^\d+$/.test(cleaned)) return invalidResult;
+
+  const day = Number(cleaned);
+  if (!Number.isInteger(day) || day < 1 || day > 31) return invalidResult;
+
+  return {
+    status: ROW_STATUS.OK,
+    day,
+    warnings: [],
+    errors: [],
+  };
+}
+
 function isBlankContextualRow(row) {
   if (!Array.isArray(row) || row.length === 0) return true;
   return row.every((cell) => cell === null || cell === undefined || String(cell).trim() === "");
+}
+
+function isMonthMarkerRow(row, mapping = {}) {
+  if (!Array.isArray(row)) return false;
+  const monthMarkerColumn = typeof mapping.monthMarkerColumn === "number" ? mapping.monthMarkerColumn : 0;
+  if (monthMarkerColumn < 0 || monthMarkerColumn >= row.length) return false;
+  return parseThaiMonthMarker(row[monthMarkerColumn]).status === ROW_STATUS.OK;
 }
 
 function isMonthlySummaryRow(row, mapping = {}) {
