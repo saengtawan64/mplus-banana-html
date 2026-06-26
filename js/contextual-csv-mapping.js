@@ -105,13 +105,78 @@ function skeletonStopResult(extra = {}) {
 }
 
 export function parseContextualSalesCsv(rowsOrText, options = {}) {
-  void rowsOrText;
-  void options;
-
-  return skeletonStopResult({
+  const result = {
+    status: PARSER_STATUS.STOP,
+    reviewOnly: true,
+    inputType: "unsupported",
     rows: [],
     mapping: null,
-  });
+    normalized: null,
+    summaries: {
+      salesPreviewSummary: null,
+      draftRowsSummary: null,
+      totalSalesSummary: null,
+    },
+    warnings: [],
+    errors: [],
+  };
+
+  if (typeof rowsOrText === "string") {
+    return {
+      ...result,
+      inputType: "text",
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual CSV text parsing is not approved yet.",
+        },
+      ],
+    };
+  }
+
+  if (!Array.isArray(rowsOrText)) {
+    return {
+      ...result,
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual CSV input must be rows array or approved text parser input.",
+        },
+      ],
+    };
+  }
+
+  const mapping = detectContextualMapping(rowsOrText, options);
+  if (mapping.status === PARSER_STATUS.STOP) {
+    return {
+      ...result,
+      inputType: "rows",
+      mapping,
+      warnings: mapping.warnings.slice(),
+      errors: mapping.errors.slice(),
+    };
+  }
+
+  const normalized = normalizeContextualRows(rowsOrText, mapping, options);
+  const status = normalized.status === PARSER_STATUS.WARNING || mapping.status === PARSER_STATUS.WARNING
+    ? PARSER_STATUS.WARNING
+    : PARSER_STATUS.OK;
+
+  return {
+    ...result,
+    status,
+    inputType: "rows",
+    rows: normalized.rows,
+    mapping,
+    normalized,
+    summaries: {
+      salesPreviewSummary: normalized.salesPreviewSummary,
+      draftRowsSummary: normalized.draftRowsSummary,
+      totalSalesSummary: normalized.totalSalesSummary,
+    },
+    warnings: [...mapping.warnings, ...normalized.warnings],
+    errors: normalized.errors.slice(),
+  };
 }
 
 export function detectContextualMapping(rows, options = {}) {
