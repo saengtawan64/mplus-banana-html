@@ -211,6 +211,13 @@ function isBlankContextualRow(row) {
   return row.every((cell) => cell === null || cell === undefined || String(cell).trim() === "");
 }
 
+function isMonthlySummaryRow(row, mapping = {}) {
+  if (!Array.isArray(row)) return false;
+  const dayColumn = typeof mapping.dayColumn === "number" ? mapping.dayColumn : 1;
+  if (dayColumn < 0 || dayColumn >= row.length) return false;
+  return String(row[dayColumn] ?? "").trim() === "รวม";
+}
+
 function classifyContextualRow(row, context = {}, mapping = {}) {
   void row;
   void context;
