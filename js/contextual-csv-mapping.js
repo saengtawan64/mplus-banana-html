@@ -206,6 +206,11 @@ function parseThaiMonthMarker(value) {
   };
 }
 
+function isBlankContextualRow(row) {
+  if (!Array.isArray(row) || row.length === 0) return true;
+  return row.every((cell) => cell === null || cell === undefined || String(cell).trim() === "");
+}
+
 function classifyContextualRow(row, context = {}, mapping = {}) {
   void row;
   void context;
