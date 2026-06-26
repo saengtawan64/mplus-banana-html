@@ -382,6 +382,7 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
   }
 
   result.salesPreviewSummary = createSalesPreviewReviewSummary(result.dailyCandidates);
+  result.rows = createNormalizedDailySalesRows(result.dailyCandidates);
 
   return result;
 }
@@ -511,6 +512,68 @@ function createSalesPreviewReviewSummary(dailyCandidates) {
 
 function isReadablePreviewValue(previewField) {
   return previewField?.status === ROW_STATUS.OK;
+}
+
+function createNormalizedDailySalesRows(dailyCandidates) {
+  return dailyCandidates.map((candidate) => createNormalizedDailySalesDraft(candidate));
+}
+
+function createNormalizedDailySalesDraft(candidate) {
+  const systemSales = createDraftSalesValue(candidate.salesPreview?.systemSales);
+  const outsideSystemSales = createDraftSalesValue(candidate.salesPreview?.outsideSystemSales);
+  const hasValidDay = typeof candidate.day === "number";
+  const hasMonthContext = Boolean(candidate.monthContext);
+  const warnings = [];
+  const errors = [];
+
+  if (!hasValidDay) {
+    errors.push({
+      code: ROW_STATUS.INVALID_DATE,
+      message: "Daily sales draft is missing a valid day.",
+    });
+  }
+
+  if (!hasMonthContext) {
+    errors.push({
+      code: ROW_STATUS.INVALID_DATE,
+      message: "Daily sales draft is missing month context.",
+    });
+  }
+
+  const dataState = !hasValidDay || !hasMonthContext
+    ? DATA_STATE.INVALID
+    : systemSales.dataState === DATA_STATE.ACTIVE && outsideSystemSales.dataState === DATA_STATE.ACTIVE
+      ? DATA_STATE.ACTIVE
+      : DATA_STATE.MISSING;
+
+  return {
+    reviewOnly: true,
+    sourceRowNumber: candidate.sourceRowNumber,
+    dateParts: hasValidDay && hasMonthContext
+      ? {
+        day: candidate.day,
+        month: candidate.monthContext.month,
+        buddhistYear: candidate.monthContext.buddhistYear,
+        gregorianYear: candidate.monthContext.gregorianYear,
+        sourceMonthLabel: candidate.monthContext.label,
+      }
+      : null,
+    date: null,
+    dataState,
+    systemSales,
+    outsideSystemSales,
+    warnings,
+    errors,
+  };
+}
+
+function createDraftSalesValue(previewField) {
+  return {
+    value: previewField?.value ?? null,
+    dataState: previewField?.status === ROW_STATUS.OK ? DATA_STATE.ACTIVE : DATA_STATE.MISSING,
+    sourceColumn: typeof previewField?.column === "number" ? previewField.column : null,
+    status: previewField?.status || ROW_STATUS.MISSING_REQUIRED_FIELD,
+  };
 }
 
 function createClassificationMapping(mapping = {}) {
