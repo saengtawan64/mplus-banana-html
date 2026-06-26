@@ -425,7 +425,7 @@ function parseContextualNumber(value, context = {}) {
 }
 
 function createDailyCandidateMetadata(classifiedRow, rawRow, mapping = {}) {
-  return {
+  const candidate = {
     sourceRowNumber: classifiedRow.sourceRowNumber,
     rowType: classifiedRow.rowType,
     status: classifiedRow.status,
@@ -436,6 +436,42 @@ function createDailyCandidateMetadata(classifiedRow, rawRow, mapping = {}) {
     rawRow: Array.isArray(rawRow) ? rawRow.slice() : [],
     warnings: classifiedRow.warnings.slice(),
     errors: classifiedRow.errors.slice(),
+  };
+
+  return {
+    ...candidate,
+    salesPreview: createDailyCandidateSalesPreview(candidate),
+  };
+}
+
+function createDailyCandidateSalesPreview(candidate) {
+  return {
+    systemSales: readPreviewNumber(candidate.rawRow, candidate.mappingSnapshot.systemSalesColumn),
+    outsideSystemSales: readPreviewNumber(candidate.rawRow, candidate.mappingSnapshot.outsideSystemSalesColumn),
+    reviewOnly: true,
+  };
+}
+
+function readPreviewNumber(rawRow, column) {
+  if (!Array.isArray(rawRow) || typeof column !== "number") {
+    return {
+      column: null,
+      status: ROW_STATUS.MISSING_REQUIRED_FIELD,
+      value: null,
+      dataState: DATA_STATE.MISSING,
+      warnings: [],
+      errors: [],
+    };
+  }
+
+  const parsed = parseContextualNumber(rawRow[column]);
+  return {
+    column,
+    status: parsed.status,
+    value: parsed.value,
+    dataState: parsed.status === ROW_STATUS.OK ? DATA_STATE.ACTIVE : DATA_STATE.MISSING,
+    warnings: parsed.warnings.slice(),
+    errors: parsed.errors.slice(),
   };
 }
 
