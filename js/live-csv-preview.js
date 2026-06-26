@@ -10,6 +10,12 @@ const statusText = {
 };
 
 const fallbackNote = "Dashboard cards/charts/tables ยังใช้ข้อมูลตัวอย่างเดิม";
+const dailyTableFallbackText = "กำลังแสดงตาราง Dashboard ตัวอย่างเหมือนเดิม";
+const dailyTableCsvReadyText = "แหล่งข้อมูล: CSV ตรวจสอบแล้ว";
+const dailyTableCsvWarningText = "แหล่งข้อมูล: CSV Preview / มีบางแถวต้องตรวจสอบ — ตาราง Dashboard ยังใช้ข้อมูลตัวอย่าง";
+
+let originalDailyTableHtml = null;
+let dailyTableWasReplaced = false;
 
 function getPreviewElements() {
   return {
@@ -102,6 +108,83 @@ function renderPreviewTable(result) {
   table.hidden = false;
 }
 
+function getDailyTableElements() {
+  return {
+    note: document.querySelector("#dailyTableDataSourceNote"),
+    rows: document.querySelector("#dailySalesRows"),
+  };
+}
+
+function setDailyTableNote(message) {
+  const { note } = getDailyTableElements();
+  if (note) note.textContent = message;
+}
+
+function captureOriginalDailyTableHtml() {
+  const { rows } = getDailyTableElements();
+  if (!rows || originalDailyTableHtml !== null) return;
+  if (rows.innerHTML.trim()) originalDailyTableHtml = rows.innerHTML;
+}
+
+function restoreSampleDailyTable(noteText = dailyTableFallbackText) {
+  const { rows } = getDailyTableElements();
+  if (rows && dailyTableWasReplaced && originalDailyTableHtml !== null) {
+    rows.innerHTML = originalDailyTableHtml;
+  }
+  dailyTableWasReplaced = false;
+  setDailyTableNote(noteText);
+}
+
+function getDailyTableStatusLabel(row) {
+  if (!row.dateParts || row.dataState === "invalid") return "ตรวจไม่ได้";
+  if (row.systemSales?.dataState !== "active" || row.outsideSystemSales?.dataState !== "active") {
+    return "ไม่มีข้อมูล";
+  }
+  return "-";
+}
+
+function appendDailyTableCell(tr, value, className = "") {
+  const td = document.createElement("td");
+  td.textContent = value;
+  if (className) td.className = className;
+  tr.appendChild(td);
+}
+
+function renderCsvBackedDailyTable(result) {
+  const { rows } = getDailyTableElements();
+  if (!rows || !Array.isArray(result.rows) || result.rows.length === 0) return false;
+
+  captureOriginalDailyTableHtml();
+  if (originalDailyTableHtml === null) return false;
+
+  rows.textContent = "";
+
+  result.rows.forEach((row) => {
+    const tr = document.createElement("tr");
+    appendDailyTableCell(tr, formatPreviewDate(row.dateParts));
+    appendDailyTableCell(tr, formatPreviewValue(row.totalSales), "amount-cell");
+    appendDailyTableCell(tr, formatPreviewValue(row.systemSales), "amount-cell");
+    appendDailyTableCell(tr, formatPreviewValue(row.outsideSystemSales), "amount-cell");
+    appendDailyTableCell(tr, getDailyTableStatusLabel(row));
+    rows.appendChild(tr);
+  });
+
+  dailyTableWasReplaced = true;
+  setDailyTableNote(dailyTableCsvReadyText);
+  return true;
+}
+
+function syncCsvBackedDailyTable(result) {
+  if (result?.status === "ok" && renderCsvBackedDailyTable(result)) return;
+
+  if (result?.status === "warning") {
+    restoreSampleDailyTable(dailyTableCsvWarningText);
+    return;
+  }
+
+  restoreSampleDailyTable();
+}
+
 function getCacheBustedUrl(url) {
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}previewTs=${Date.now()}`;
@@ -123,10 +206,13 @@ async function loadLiveCsvPreview() {
 
   renderPreviewStatus("loading");
   clearPreviewTable();
+  captureOriginalDailyTableHtml();
+  restoreSampleDailyTable();
 
   try {
     const response = await fetch(getCacheBustedUrl(LIVE_CSV_URL), { cache: "no-store" });
     if (!response.ok) {
+      restoreSampleDailyTable();
       renderPreviewStatus("failed", {
         fetchStatus: `HTTP ${response.status}`,
         checkedAt: new Date().toLocaleString("th-TH"),
@@ -136,6 +222,7 @@ async function loadLiveCsvPreview() {
 
     const csvText = await response.text();
     if (!csvText.trim()) {
+      restoreSampleDailyTable();
       renderPreviewStatus("failed", {
         fetchStatus: "empty response",
         checkedAt: new Date().toLocaleString("th-TH"),
@@ -151,14 +238,17 @@ async function loadLiveCsvPreview() {
 
     if (result.status === "stop") {
       clearPreviewTable();
+      syncCsvBackedDailyTable(result);
       renderPreviewStatus("stop", details);
       return;
     }
 
     renderPreviewTable(result);
+    syncCsvBackedDailyTable(result);
     renderPreviewStatus("success", details);
   } catch (error) {
     clearPreviewTable();
+    restoreSampleDailyTable();
     renderPreviewStatus("failed", {
       fetchStatus: error instanceof Error ? error.message : "network error",
       checkedAt: new Date().toLocaleString("th-TH"),
