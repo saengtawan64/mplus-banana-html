@@ -330,6 +330,7 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
     monthMarkers: [],
     salesPreviewSummary: createSalesPreviewReviewSummary([]),
     draftRowsSummary: createNormalizedDraftRowsReviewSummary([]),
+    totalSalesSummary: createTotalSalesReviewSummary([]),
     warnings: [],
     errors: [],
   };
@@ -385,6 +386,7 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
   result.salesPreviewSummary = createSalesPreviewReviewSummary(result.dailyCandidates);
   result.rows = createNormalizedDailySalesRows(result.dailyCandidates);
   result.draftRowsSummary = createNormalizedDraftRowsReviewSummary(result.rows);
+  result.totalSalesSummary = createTotalSalesReviewSummary(result.rows);
 
   return result;
 }
@@ -625,6 +627,27 @@ function createNormalizedDraftRowsReviewSummary(rows) {
     if (!row.dateParts) summary.rowsWithoutDatePartsCount += 1;
     if (row.systemSales?.dataState !== DATA_STATE.ACTIVE) summary.systemSalesMissingCount += 1;
     if (row.outsideSystemSales?.dataState !== DATA_STATE.ACTIVE) summary.outsideSystemSalesMissingCount += 1;
+  });
+
+  return summary;
+}
+
+function createTotalSalesReviewSummary(rows) {
+  const summary = {
+    reviewOnly: true,
+    draftRowCount: rows.length,
+    totalSalesReadableCount: 0,
+    totalSalesMissingCount: 0,
+    totalSalesInvalidRowBlockedCount: 0,
+    warnings: [],
+    errors: [],
+  };
+
+  rows.forEach((row) => {
+    if (row.totalSales?.status === ROW_STATUS.OK) summary.totalSalesReadableCount += 1;
+    else summary.totalSalesMissingCount += 1;
+
+    if (row.dataState === DATA_STATE.INVALID) summary.totalSalesInvalidRowBlockedCount += 1;
   });
 
   return summary;
