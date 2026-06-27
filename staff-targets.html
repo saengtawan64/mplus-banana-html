@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="th">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,36 +12,50 @@
       <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
-    <main class="page-shell">
-      <section class="topbar-card" aria-label="บริบทเป้าสาขา">
-        <div>
-          <h2>เป้าแบรนด์โฟกัส</h2>
-          <p class="panel-kicker">ดูระดับสาขาเท่านั้น ไม่ใช่ยอดขายรายบุคคลของพนักงาน</p>
-        </div>
-        <div class="topbar-meta">
-          <span class="pill yellow">ระดับสาขา</span>
-          <span class="pill gray">ข้อมูลตัวอย่าง</span>
-        </div>
-      </section>
-
-      <section class="page-heading">
-        <div>
+    <main class="page-shell staff-targets-shell">
+      <section class="staff-targets-premium-header" aria-label="ภาพรวมเป้าสาขา">
+        <div class="staff-targets-heading">
           <p class="eyebrow">เป้าสาขา</p>
-          <h1>ความคืบหน้าแบรนด์โฟกัส</h1>
-          <p class="page-subtitle">ใช้ดูภาพรวมทีมระดับสาขาเท่านั้น ไม่ใช่การนับยอดรายบุคคล</p>
+          <h1>ภาพรวมแบรนด์โฟกัสระดับสาขา</h1>
+          <p class="page-subtitle">หน้า Preview สำหรับติดตามเป้าทีมสาขาเท่านั้น ยังไม่ใช่ข้อมูลใช้งานจริง และไม่ใช่ยอดขายรายบุคคล</p>
         </div>
+        <section class="staff-targets-filter-card" aria-label="ตัวกรองเป้าสาขา">
+          <label>สาขา <select id="targetBranch"></select></label>
+          <label>เดือน <input id="targetMonth" type="month"></label>
+        </section>
       </section>
 
-      <div class="notice neutral">
-        หน้านี้แสดงความคืบหน้าแบรนด์โฟกัสระดับสาขาเท่านั้น ไม่ใช่ยอดขายรายบุคคลของพนักงาน ไม่ใช้สำหรับคำนวณยอดรายบุคคลหรือค่าคอมมิชชั่น
+      <div class="notice warn staff-targets-warning">
+        ข้อมูลตัวอย่างระดับสาขาเท่านั้น ไม่ใช่ยอดขายรายบุคคลของพนักงาน และไม่ใช้สำหรับคำนวณค่าคอมมิชชั่น
       </div>
 
-      <section class="filter-bar" aria-label="ตัวกรองเป้าสาขา">
-        <label>สาขา <select id="targetBranch"></select></label>
-        <label>เดือน <input id="targetMonth" type="month"></label>
+      <section class="staff-targets-hero" aria-label="การ์ดเป้าหมายแบรนด์โฟกัส">
+        <div class="staff-targets-hero-copy">
+          <p class="staff-targets-label">Focus Brands</p>
+          <h2 id="targetHeroTitle">Samsung + OPPO + vivo</h2>
+          <p id="targetHeroContext">ข้อมูลตัวอย่างระดับสาขา</p>
+          <div class="staff-targets-brand-list" id="targetBrandList" aria-label="แบรนด์โฟกัส"></div>
+          <p class="staff-targets-sample-note">Sample / Prototype เท่านั้น Dashboard จริงยังต้องผ่านการอนุมัติข้อมูลก่อนใช้งาน</p>
+        </div>
+        <div class="staff-targets-ring-wrap" id="targetProgressRing" aria-label="ความคืบหน้ายอดขาย"></div>
       </section>
 
-      <section class="metric-grid target-grid" id="targetCards" aria-label="ความคืบหน้าเป้าสาขา"></section>
+      <section class="staff-targets-summary-grid" id="targetSummaryGrid" aria-label="สรุปความคืบหน้าเป้าสาขา"></section>
+
+      <section class="staff-targets-cumulative-chart" aria-label="กราฟสะสมรายวัน">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Daily Progress</p>
+            <h2>ความคืบหน้าสะสมรายวัน</h2>
+          </div>
+          <span class="pill gray">ข้อมูลตัวอย่าง</span>
+        </div>
+        <div id="targetCumulativeChart" class="staff-targets-chart-frame"></div>
+      </section>
+
+      <p class="staff-targets-guardrail-note">
+        หมายเหตุ: หน้านี้เป็นต้นแบบข้อมูลตัวอย่างระดับสาขา ไม่ใช่การวัดยอดรายบุคคล ไม่ใช่เครื่องมือคำนวณค่าคอมมิชชั่น และยังไม่มีการเชื่อมต่อ CSV จริง
+      </p>
     </main>
 
     <script type="module" src="js/staff-targets.js"></script>
