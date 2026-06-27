@@ -12,46 +12,89 @@
       <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
-    <main class="page-shell app-main">
-      <section class="topbar-card app-toolbar premium-panel" aria-label="บริบทรายงาน">
-        <div>
-          <h2>รายงานรายเดือน</h2>
-          <p class="panel-kicker">แถวตัวอย่างใช้ดูรูปแบบรายงานก่อนเชื่อม Published CSV จริง</p>
+    <main class="page-shell app-main reports-workspace">
+      <section class="reports-hero premium-panel" aria-label="พื้นที่รายงาน">
+        <div class="reports-hero-copy">
+          <p class="eyebrow">Reports Workspace</p>
+          <h1>รายงานยอดขายรายเดือนแบบ Prototype</h1>
+          <p class="page-subtitle">
+            ตรวจรูปแบบรายงาน สถานะข้อมูลตัวอย่าง และแถวรายงานก่อนอนุมัติการเชื่อม CSV จริง
+          </p>
+          <div class="reports-hero-status" aria-label="สถานะรายงาน">
+            <span>Sample report only</span>
+            <span>No production CSV</span>
+            <span>No PDF / Excel export</span>
+          </div>
         </div>
-        <div class="topbar-meta">
-          <a class="button" href="mapping.html">จับคู่ CSV</a>
+        <div class="reports-actions" aria-label="ลิงก์รายงานที่เกี่ยวข้อง">
+          <a class="button primary" href="dashboard.html">เปิด Dashboard</a>
           <a class="button" href="compare.html">เปรียบเทียบ</a>
+          <a class="button" href="export.html">คัดลอกสรุป</a>
         </div>
       </section>
 
-      <section class="page-heading app-page-header premium-panel">
+      <section class="reports-status-strip" aria-label="สถานะและข้อจำกัดรายงาน">
+        <div class="notice warn reports-warning">
+          ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV แถวรายงานเป็นข้อมูลตัวอย่างจนกว่าจะมีการอนุมัติแหล่งข้อมูลจริง
+        </div>
+        <article class="reports-status-card">
+          <span class="reports-card-label">CSV</span>
+          <h2>ยังไม่ใช่ข้อมูลทางการ</h2>
+          <p>CSV ยอดรวมใช้เป็น cross-check ในอนาคตเท่านั้น ไม่ใช่ official total</p>
+        </article>
+        <article class="reports-status-card">
+          <span class="reports-card-label">Supporting</span>
+          <h2>ข้อมูลประกอบเท่านั้น</h2>
+          <p>Finance / contract / profit ไม่ถูกรวมในยอดขายหลัก</p>
+        </article>
+      </section>
+
+      <section class="reports-filter-panel" aria-label="ตัวกรองรายงาน">
         <div>
-          <p class="eyebrow">รายงาน</p>
-          <h1>รายงานยอดขายรายเดือน</h1>
-          <p class="page-subtitle">ดูแถวตัวอย่างก่อนเพิ่มลิงก์ Published CSV จริง</p>
+          <p class="panel-kicker">Report controls</p>
+          <h2>เลือกมุมมองรายงานตัวอย่าง</h2>
+        </div>
+        <div class="reports-filter-grid">
+          <label>เดือน <input id="reportMonth" type="month"></label>
+          <label>สาขา <select id="reportBranch"></select></label>
+          <label>ตัวชี้วัด
+            <select id="reportMetric">
+              <option value="totalSales">ยอดขายรวม</option>
+              <option value="systemSales">ยอดในระบบ</option>
+              <option value="outsideSystemSales">ยอดนอกระบบ</option>
+              <option value="deviceCount">จำนวนเครื่อง</option>
+            </select>
+          </label>
         </div>
       </section>
 
-      <section class="filter-bar" aria-label="ตัวกรองรายงาน">
-        <label>เดือน <input id="reportMonth" type="month"></label>
-        <label>สาขา <select id="reportBranch"></select></label>
-        <label>ตัวชี้วัด
-          <select id="reportMetric">
-            <option value="totalSales">ยอดขายรวม</option>
-            <option value="systemSales">ยอดในระบบ</option>
-            <option value="outsideSystemSales">ยอดนอกระบบ</option>
-            <option value="deviceCount">จำนวนเครื่อง</option>
-          </select>
-        </label>
+      <section class="reports-summary-grid" aria-label="สรุปรายงานตัวอย่าง">
+        <article class="reports-summary-card">
+          <span class="reports-card-label">Scope</span>
+          <h2>3 แถวตัวอย่าง</h2>
+          <p>ใช้ตรวจรูปแบบรายงานเท่านั้น</p>
+        </article>
+        <article class="reports-summary-card">
+          <span class="reports-card-label">Sample total</span>
+          <h2>170,000</h2>
+          <p>ยอดรวมตัวอย่างจาก systemSales + outsideSystemSales</p>
+        </article>
+        <article class="reports-summary-card">
+          <span class="reports-card-label">Missing</span>
+          <h2>1 แถว</h2>
+          <p>แถวที่ไม่มีข้อมูลยังคงเป็น missing ไม่ใช่ 0</p>
+        </article>
+        <article class="reports-summary-card">
+          <span class="reports-card-label">Metric</span>
+          <h2>เลือกจากตัวกรอง</h2>
+          <p>ตัวกรองยังใช้กับตัวอย่างรายงานเท่านั้น</p>
+        </article>
       </section>
 
-      <div class="notice warn">
-        ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV แถวรายงานเป็นข้อมูลตัวอย่างจนกว่าจะมีลิงก์ Published CSV จริง
-      </div>
-
-      <section class="panel">
+      <section class="reports-data-panel reports-table-panel" aria-label="ตารางรายงานตัวอย่าง">
         <div class="panel-header">
           <div>
+            <p class="panel-kicker">Data panel</p>
             <h2>ตารางรายงาน</h2>
             <p class="panel-kicker">ข้อมูลหายหรือไม่พบแถว = ไม่พบข้อมูล / ค่า 0 ที่มีอยู่จริงยังนับเป็น 0 ปกติ</p>
           </div>
@@ -71,6 +114,24 @@
             </thead>
             <tbody id="reportRows"></tbody>
           </table>
+        </div>
+      </section>
+
+      <section class="reports-guardrail-panel" aria-label="ข้อจำกัดของรายงาน">
+        <div>
+          <p class="panel-kicker">Prototype guardrails</p>
+          <h2>รายงานนี้ยังไม่ใช่ระบบ production</h2>
+        </div>
+        <ul>
+          <li>ข้อมูลบนรายงานเป็นข้อมูลตัวอย่างเท่านั้น</li>
+          <li>ยังไม่เชื่อม real CSV หรือ live CSV URL เป็นแหล่งข้อมูลทางการ</li>
+          <li>ไม่มี PDF หรือ Excel export เพิ่มในรอบนี้</li>
+          <li>สูตรยอดขายหลักยังเป็น totalSales = systemSales + outsideSystemSales</li>
+        </ul>
+        <div class="reports-actions">
+          <a class="button" href="dashboard.html">Dashboard</a>
+          <a class="button" href="compare.html">Compare</a>
+          <a class="button" href="mapping.html">CSV Mapping</a>
         </div>
       </section>
     </main>
