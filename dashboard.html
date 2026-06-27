@@ -33,13 +33,14 @@
         </div>
       </section>
 
-      <div id="dataStatus" class="notice neutral"></div>
+      <section class="dashboard-status-strip" aria-label="สถานะข้อมูล Dashboard">
+        <div id="dataStatus" class="notice neutral"></div>
 
-      <div class="notice warn dashboard-warning">
+        <div class="notice warn dashboard-warning">
         ข้อมูลตัวอย่างเท่านั้น — ยังไม่ใช่ยอดขายจริงจาก CSV / ต้นแบบ Phase 1
-      </div>
+        </div>
 
-      <section class="panel" id="liveCsvPreviewPanel" aria-label="ตรวจ CSV จริงแบบ Preview เท่านั้น">
+        <section class="panel dashboard-mini-widget dashboard-csv-widget" id="liveCsvPreviewPanel" aria-label="ตรวจ CSV จริงแบบ Preview เท่านั้น">
         <div class="panel-header">
           <div>
             <h2>ตรวจ CSV จริงแบบ Preview เท่านั้น</h2>
@@ -69,15 +70,26 @@
             </table>
           </div>
         </div>
+        </section>
       </section>
 
-      <section class="dashboard-summary" aria-label="สรุปยอดขายตัวอย่าง">
-        <article class="metric-card dashboard-hero-card" id="totalSalesCard"></article>
-        <div class="dashboard-secondary-cards" id="salesBreakdownCards"></div>
+      <section class="dashboard-premium-layout" aria-label="สรุปยอดขายตัวอย่าง">
+        <article class="metric-card dashboard-hero-card dashboard-hero-kpi" id="totalSalesCard"></article>
+        <div class="dashboard-secondary-cards dashboard-kpi-side" id="salesBreakdownCards"></div>
       </section>
 
-      <section class="dashboard-grid">
-        <article class="panel support-panel">
+      <section class="dashboard-insight-grid" aria-label="ข้อมูลเชิงลึก Dashboard">
+        <section class="panel recent-panel dashboard-chart-panel">
+          <div class="panel-header">
+            <div>
+              <h2>ยอดขาย 6 วันล่าสุด</h2>
+              <p class="panel-kicker">กราฟแท่ง HTML จากข้อมูลตัวอย่างเท่านั้น</p>
+            </div>
+          </div>
+          <div class="mini-bars" id="recentSalesBars" aria-label="ยอดขายตัวอย่าง 6 วันล่าสุด"></div>
+        </section>
+
+        <article class="panel support-panel dashboard-mini-widget">
           <div class="panel-header">
             <div>
               <h2>ข้อมูลประกอบ</h2>
@@ -87,7 +99,7 @@
           <div class="support-metrics" id="supportMetrics"></div>
         </article>
 
-        <article class="panel target-panel">
+        <article class="panel target-panel dashboard-mini-widget">
           <div class="panel-header">
             <div>
               <h2>ความคืบหน้าแบรนด์โฟกัส</h2>
@@ -98,17 +110,7 @@
         </article>
       </section>
 
-      <section class="panel recent-panel">
-        <div class="panel-header">
-          <div>
-            <h2>ยอดขาย 6 วันล่าสุด</h2>
-            <p class="panel-kicker">กราฟแท่ง HTML จากข้อมูลตัวอย่างเท่านั้น</p>
-          </div>
-        </div>
-        <div class="mini-bars" id="recentSalesBars" aria-label="ยอดขายตัวอย่าง 6 วันล่าสุด"></div>
-      </section>
-
-      <section class="panel monthly-panel">
+      <section class="panel monthly-panel dashboard-chart-panel">
         <div class="panel-header">
           <div>
             <h2>กราฟตัวอย่าง: เปรียบเทียบรายเดือน</h2>
@@ -126,7 +128,7 @@
         </div>
       </section>
 
-      <section class="panel daily-panel">
+      <section class="panel daily-panel dashboard-table-panel">
         <div class="panel-header">
           <div>
             <h2>ตารางยอดขายรายวัน</h2>
@@ -151,7 +153,7 @@
         </div>
       </section>
 
-      <div class="action-row dashboard-actions" aria-label="เมนูเสริมของหน้ายอดขาย">
+      <div class="action-row dashboard-actions dashboard-compact-actions" aria-label="เมนูเสริมของหน้ายอดขาย">
         <a class="button" href="export.html">คัดลอกสรุป</a>
         <a class="button" href="reports.html">รายงาน</a>
         <a class="button" href="compare.html">เปรียบเทียบ</a>
