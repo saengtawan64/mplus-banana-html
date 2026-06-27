@@ -89,11 +89,32 @@ const SKELETON_ERROR = Object.freeze({
 
 const CONTEXTUAL_ROW_TYPE = Object.freeze({
   BLANK: "blank",
+  STRUCTURE: "structure",
   MONTH_MARKER: "monthMarker",
   MONTHLY_SUMMARY: "monthlySummary",
   DAILY_CANDIDATE: "dailyCandidate",
   INVALID: "invalid",
 });
+
+const CONTEXTUAL_STRUCTURE_LABELS = Object.freeze([
+  REQUIRED_CONTEXTUAL_FIELDS.systemSales.section,
+  REQUIRED_CONTEXTUAL_FIELDS.outsideSystemSales.section,
+  REQUIRED_CONTEXTUAL_FIELDS.systemSales.field,
+  SUPPORTING_FIELDS.deviceCount.field,
+  SUPPORTING_FIELDS.financeAmount.field,
+  SUPPORTING_FIELDS.contractCount.field,
+  SUPPORTING_FIELDS.profit.field,
+  CROSS_CHECK_FIELD.field,
+  "วันที่",
+  "รวมยอด",
+  "จำนวนโทรศัพท์",
+  "ยอดจัด",
+  "สญ",
+  "กำไร",
+  "SG",
+  "ประเภทสินเชื่อ",
+  "ยอดขายรวม",
+]);
 
 function skeletonStopResult(extra = {}) {
   return {
@@ -378,12 +399,14 @@ export function detectContextualMapping(rows, options = {}) {
       matched: false,
       confidence: "low",
     },
-    warnings: [
+    assumptions: [
       {
         code: "defaultMonthMarkerColumn",
-        message: "Month marker column defaults to index 0 until contextual mapping is fully implemented.",
+        message: "Month marker column defaults to index 0 for the approved contextual CSV shape.",
+        column: 0,
       },
     ],
+    warnings: [],
     errors: [],
   };
 
@@ -547,7 +570,14 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
   const classificationMapping = createClassificationMapping(mapping);
 
   rows.forEach((row, index) => {
-    const classification = classifyContextualRow(row, { sourceRowNumber: index + 1 }, classificationMapping);
+    const classification = classifyContextualRow(
+      row,
+      {
+        sourceRowNumber: index + 1,
+        hasMonthContext: Boolean(currentMonthContext),
+      },
+      classificationMapping
+    );
     const classifiedRow = {
       ...classification,
       monthContext: currentMonthContext,
@@ -561,7 +591,10 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
       result.dailyCandidates.push(createDailyCandidateMetadata(classifiedRow, row, mapping));
     } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.MONTHLY_SUMMARY) {
       result.excludedRows.push(classifiedRow);
-    } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.BLANK) {
+    } else if (
+      classification.rowType === CONTEXTUAL_ROW_TYPE.BLANK
+      || classification.rowType === CONTEXTUAL_ROW_TYPE.STRUCTURE
+    ) {
       result.skippedRows.push(classifiedRow);
     } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.INVALID) {
       result.invalidRows.push(classifiedRow);
@@ -1018,10 +1051,11 @@ function parseThaiMonthMarker(value) {
 
   if (!label) return invalidResult;
 
-  const match = label.match(/^เดือน\s+(.+?)\s+(\d{4})$/);
+  const match = label.match(/^เดือน\s*(.+?)\s*(\d{4})$/);
   if (!match) return invalidResult;
 
-  const month = THAI_MONTHS[match[1]];
+  const monthLabel = match[1].trim();
+  const month = THAI_MONTHS[monthLabel];
   const buddhistYear = Number(match[2]);
   if (!month || Number.isNaN(buddhistYear)) return invalidResult;
 
@@ -1030,7 +1064,7 @@ function parseThaiMonthMarker(value) {
     month,
     buddhistYear,
     gregorianYear: buddhistYear - 543,
-    label,
+    label: `เดือน ${monthLabel} ${buddhistYear}`,
     warnings: [],
     errors: [],
   };
@@ -1082,6 +1116,78 @@ function isMonthlySummaryRow(row, mapping = {}) {
   const dayColumn = typeof mapping.dayColumn === "number" ? mapping.dayColumn : 1;
   if (dayColumn < 0 || dayColumn >= row.length) return false;
   return String(row[dayColumn] ?? "").trim() === "รวม";
+}
+
+function isMonthlySummaryLikeRow(row, context = {}, mapping = {}) {
+  if (!Array.isArray(row) || !context.hasMonthContext) return false;
+  if (isMonthMarkerRow(row, mapping) || isMonthlySummaryRow(row, mapping)) return false;
+
+  const dayColumn = typeof mapping.dayColumn === "number" ? mapping.dayColumn : 1;
+  if (parseContextualDay(row[dayColumn]).status === ROW_STATUS.OK) return false;
+
+  const numericCellCount = row.reduce((count, cell) => {
+    const parsed = parseContextualNumber(cell);
+    return parsed.status === ROW_STATUS.OK ? count + 1 : count;
+  }, 0);
+  const nonEmptyCellCount = row.filter((cell) => normalizeContextualLabel(cell) !== "").length;
+
+  return numericCellCount >= 2 || (numericCellCount >= 1 && nonEmptyCellCount <= 1);
+}
+
+function isContextualReportTitleRow(row, context = {}, mapping = {}) {
+  if (!Array.isArray(row) || context.hasMonthContext) return false;
+
+  const monthMarkerColumn = typeof mapping.monthMarkerColumn === "number" ? mapping.monthMarkerColumn : 0;
+  const monthMarkerCell = row[monthMarkerColumn];
+  if (normalizeContextualLabel(monthMarkerCell) !== "") return false;
+
+  return row.some((cell, index) => {
+    if (index === monthMarkerColumn) return false;
+
+    const label = normalizeContextualLabel(cell);
+    return /^ยอดขายรวม.+ปี\s*\d{4}$/.test(label);
+  });
+}
+
+function isContextualHeaderOrTitleRow(row, mapping = {}) {
+  if (!Array.isArray(row)) return false;
+
+  const monthMarkerColumn = typeof mapping.monthMarkerColumn === "number" ? mapping.monthMarkerColumn : 0;
+  const dayColumn = typeof mapping.dayColumn === "number" ? mapping.dayColumn : 1;
+  const monthMarkerCell = row[monthMarkerColumn];
+  const dayResult = parseContextualDay(row[dayColumn]);
+
+  if (dayResult.status === ROW_STATUS.OK) return false;
+  if (parseThaiMonthMarker(monthMarkerCell).status === ROW_STATUS.OK) return false;
+  if (isMonthlySummaryRow(row, mapping)) return false;
+
+  const labels = row
+    .map((cell) => normalizeContextualLabel(cell))
+    .filter(Boolean);
+  const hasStructureLabel = labels.some((label) => (
+    CONTEXTUAL_STRUCTURE_LABELS.some((structureLabel) => label === structureLabel || label.includes(structureLabel))
+  ));
+  const hasTitleLabel = labels.some((label) => label.includes("ยอดขายรวม"));
+  const hasSectionHeaderLabel = labels.some((label) => (
+    label === REQUIRED_CONTEXTUAL_FIELDS.systemSales.section
+    || label === REQUIRED_CONTEXTUAL_FIELDS.outsideSystemSales.section
+    || label === "SG"
+  ));
+  const fieldLabelCount = labels.filter((label) => (
+    label === "วันที่"
+    || label === REQUIRED_CONTEXTUAL_FIELDS.systemSales.field
+    || label === SUPPORTING_FIELDS.deviceCount.field
+    || label === SUPPORTING_FIELDS.financeAmount.field
+    || label === SUPPORTING_FIELDS.contractCount.field
+    || label === SUPPORTING_FIELDS.profit.field
+    || label === CROSS_CHECK_FIELD.field
+  )).length;
+
+  if (hasTitleLabel) return true;
+  if (hasSectionHeaderLabel) return true;
+  if (fieldLabelCount >= 2) return true;
+
+  return dayResult.status !== ROW_STATUS.OK && hasStructureLabel;
 }
 
 function classifyContextualRow(row, context = {}, mapping = {}) {
@@ -1143,12 +1249,21 @@ function classifyContextualRow(row, context = {}, mapping = {}) {
     };
   }
 
-  if (isMonthlySummaryRow(row, mapping)) {
+  if (isMonthlySummaryRow(row, mapping) || isMonthlySummaryLikeRow(row, context, mapping)) {
     return {
       ...baseResult,
       status: ROW_STATUS.OK,
       dataState: DATA_STATE.NO_DATA,
       rowType: CONTEXTUAL_ROW_TYPE.MONTHLY_SUMMARY,
+    };
+  }
+
+  if (isContextualReportTitleRow(row, context, mapping) || isContextualHeaderOrTitleRow(row, mapping)) {
+    return {
+      ...baseResult,
+      status: ROW_STATUS.OK,
+      dataState: DATA_STATE.NO_DATA,
+      rowType: CONTEXTUAL_ROW_TYPE.STRUCTURE,
     };
   }
 
