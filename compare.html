@@ -12,64 +12,149 @@
       <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
-    <main class="page-shell app-main">
-      <section class="topbar-card app-toolbar premium-panel" aria-label="บริบทการเปรียบเทียบ">
-        <div>
-          <h2>เปรียบเทียบข้อมูลตัวอย่าง</h2>
-          <p class="panel-kicker">กราฟนี้ใช้ข้อมูลตัวอย่าง และแยกข้อมูลประกอบออกจากยอดขายรวม</p>
-        </div>
-        <div class="topbar-meta">
-          <a class="button" href="dashboard.html">ยอดขาย</a>
-          <a class="button" href="reports.html">รายงาน</a>
-        </div>
-      </section>
-
-      <section class="page-heading app-page-header premium-panel">
-        <div>
-          <p class="eyebrow">เปรียบเทียบ</p>
-          <h1>เปรียบเทียบยอดขาย</h1>
-          <p class="page-subtitle">ดูตัวอย่างการเปรียบเทียบยอดขาย โดยข้อมูลประกอบยังไม่รวมในยอดขายรวม</p>
-        </div>
-      </section>
-
-      <section class="filter-bar" aria-label="ตัวกรองการเปรียบเทียบ">
-        <label>เปรียบเทียบตาม
-          <select id="compareDimension">
-            <option value="branch">สาขา</option>
-            <option value="month">เดือน</option>
-            <option value="category">หมวดหมู่</option>
-            <option value="channel">ช่องทาง</option>
-          </select>
-        </label>
-        <label>รูปแบบกราฟ
-          <select id="chartType">
-            <option value="bar">แท่ง</option>
-            <option value="line">เส้น</option>
-            <option value="doughnut">วงกลม</option>
-            <option value="stackedBar">แท่งซ้อน</option>
-          </select>
-        </label>
-        <label>ตัวชี้วัด
-          <select id="compareMetric">
-            <option value="totalSales">ยอดขายรวม</option>
-            <option value="systemSales">ยอดในระบบ</option>
-            <option value="outsideSystemSales">ยอดนอกระบบ</option>
-            <option value="deviceCount">จำนวนเครื่อง</option>
-          </select>
-        </label>
-      </section>
-
-      <section class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>กราฟตัวอย่าง: เปรียบเทียบยอดขาย</h2>
-            <p class="panel-kicker">ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV</p>
+    <main class="page-shell app-main compare-workspace">
+      <section class="compare-hero premium-panel" aria-label="พื้นที่วิเคราะห์เปรียบเทียบ">
+        <div class="compare-hero-copy">
+          <p class="eyebrow">Compare Analytics Workspace</p>
+          <h1>เปรียบเทียบยอดขายแบบ Prototype</h1>
+          <p class="page-subtitle">
+            พื้นที่วิเคราะห์ตัวอย่างสำหรับดูแนวโน้มและสัดส่วนยอดขาย โดยยังไม่เชื่อมข้อมูล CSV จริงเป็นข้อมูลทางการ
+          </p>
+          <div class="compare-hero-status" aria-label="สถานะการเปรียบเทียบ">
+            <span>Sample analytics only</span>
+            <span>No production CSV</span>
+            <span>No live dashboard replacement</span>
           </div>
         </div>
-        <div class="chart-frame">
-          <canvas id="compareChart" height="260"></canvas>
+        <div class="compare-actions" aria-label="ลิงก์ที่เกี่ยวข้อง">
+          <a class="button primary" href="dashboard.html">เปิด Dashboard</a>
+          <a class="button" href="reports.html">รายงาน</a>
+          <a class="button" href="export.html">คัดลอกสรุป</a>
         </div>
-        <p class="chart-note">ถ้าโหลด Chart.js จาก CDN ไม่ได้ หน้านี้ยังต้องใช้งานส่วนตัวกรองได้ตามปกติ</p>
+      </section>
+
+      <section class="compare-status-strip" aria-label="สถานะและข้อจำกัดการเปรียบเทียบ">
+        <div class="notice warn compare-warning">
+          ข้อมูลเปรียบเทียบเป็นตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV และยังไม่ใช่ analytics สำหรับ production
+        </div>
+        <article class="compare-status-card">
+          <span class="compare-card-label">Official total</span>
+          <h2>ใช้สูตรหลักเท่านั้น</h2>
+          <p>totalSales = systemSales + outsideSystemSales</p>
+        </article>
+        <article class="compare-status-card">
+          <span class="compare-card-label">Cross-check</span>
+          <h2>CSV ยอดรวมยังไม่ใช่ยอดทางการ</h2>
+          <p>ใช้ตรวจเทียบในอนาคตเท่านั้น ไม่ใช้เป็นยอดขายหลัก</p>
+        </article>
+      </section>
+
+      <section class="compare-control-panel" aria-label="ตัวกรองการเปรียบเทียบ">
+        <div>
+          <p class="panel-kicker">Comparison controls</p>
+          <h2>เลือกมุมมองกราฟตัวอย่าง</h2>
+        </div>
+        <div class="compare-control-grid">
+          <label>เปรียบเทียบตาม
+            <select id="compareDimension">
+              <option value="branch">สาขา</option>
+              <option value="month">เดือน</option>
+              <option value="category">หมวดหมู่</option>
+              <option value="channel">ช่องทาง</option>
+            </select>
+          </label>
+          <label>รูปแบบกราฟ
+            <select id="chartType">
+              <option value="bar">แท่ง</option>
+              <option value="line">เส้น</option>
+              <option value="doughnut">วงกลม</option>
+              <option value="stackedBar">แท่งซ้อน</option>
+            </select>
+          </label>
+          <label>ตัวชี้วัด
+            <select id="compareMetric">
+              <option value="totalSales">ยอดขายรวม</option>
+              <option value="systemSales">ยอดในระบบ</option>
+              <option value="outsideSystemSales">ยอดนอกระบบ</option>
+              <option value="deviceCount">จำนวนเครื่อง</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="compare-summary-grid" aria-label="สรุปการเปรียบเทียบตัวอย่าง">
+        <article class="compare-summary-card">
+          <span class="compare-card-label">Scope</span>
+          <h2>3 สาขาตัวอย่าง</h2>
+          <p>ข้อมูลใช้ตรวจรูปแบบการเปรียบเทียบเท่านั้น</p>
+        </article>
+        <article class="compare-summary-card">
+          <span class="compare-card-label">Formula</span>
+          <h2>ในระบบ + นอกระบบ</h2>
+          <p>ยอดขายรวมยังยึดสูตรหลัก ไม่ใช้ CSV ยอดรวม</p>
+        </article>
+        <article class="compare-summary-card">
+          <span class="compare-card-label">Metric</span>
+          <h2>เลือกจากตัวกรอง</h2>
+          <p>ตัวเลือกยังควบคุมกราฟตัวอย่างเท่านั้น</p>
+        </article>
+        <article class="compare-summary-card">
+          <span class="compare-card-label">Readiness</span>
+          <h2>Sample mode</h2>
+          <p>ยังไม่มี real CSV หรือ live analytics ในหน้านี้</p>
+        </article>
+      </section>
+
+      <section class="compare-analytics-grid" aria-label="กราฟและข้อมูลประกอบ">
+        <article class="compare-chart-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Main chart</p>
+              <h2>กราฟตัวอย่าง: เปรียบเทียบยอดขาย</h2>
+              <p class="panel-kicker">Chart.js loader และข้อมูลตัวอย่างยังทำงานเหมือนเดิม</p>
+            </div>
+          </div>
+          <div class="chart-frame compare-chart-frame">
+            <canvas id="compareChart" height="260"></canvas>
+          </div>
+          <p class="chart-note">ถ้าโหลด Chart.js จาก CDN ไม่ได้ หน้านี้ยังต้องใช้งานส่วนตัวกรองได้ตามปกติ</p>
+        </article>
+
+        <aside class="compare-insight-grid" aria-label="หมายเหตุการวิเคราะห์">
+          <article class="compare-note-panel">
+            <span class="compare-card-label">Split view</span>
+            <h2>ในระบบ vs นอกระบบ</h2>
+            <p>กราฟตัวอย่างแยกยอดในระบบและนอกระบบ เพื่อช่วยตรวจโครงสร้าง analytics ก่อนใช้ข้อมูลจริง</p>
+          </article>
+          <article class="compare-note-panel">
+            <span class="compare-card-label">Supporting only</span>
+            <h2>ข้อมูลประกอบไม่รวมยอดขายหลัก</h2>
+            <p>Finance / contract / profit เป็นข้อมูลประกอบ ไม่ถูกรวมใน official sales total</p>
+          </article>
+          <article class="compare-note-panel">
+            <span class="compare-card-label">Prototype</span>
+            <h2>ยังไม่ใช่ live analytics</h2>
+            <p>หน้านี้ยังไม่เชื่อม real CSV และไม่ควรถูกอ่านเป็นรายงาน production</p>
+          </article>
+        </aside>
+      </section>
+
+      <section class="compare-guardrail-panel" aria-label="ข้อจำกัดและลิงก์ที่เกี่ยวข้อง">
+        <div>
+          <p class="panel-kicker">Prototype guardrails</p>
+          <h2>Compare ยังเป็นพื้นที่ทดลองข้อมูลตัวอย่าง</h2>
+        </div>
+        <ul>
+          <li>ไม่มีการเชื่อม real CSV หรือ live CSV URL ในหน้านี้</li>
+          <li>ไม่มี PDF หรือ Excel export เพิ่มในรอบนี้</li>
+          <li>CSV ยอดรวมยังเป็น cross-check เท่านั้น ไม่ใช่ official total</li>
+          <li>ไม่เพิ่ม parser, backend, API หรือ dependency ใหม่</li>
+        </ul>
+        <div class="compare-actions">
+          <a class="button" href="dashboard.html">Dashboard</a>
+          <a class="button" href="reports.html">Reports</a>
+          <a class="button" href="export.html">Export</a>
+        </div>
       </section>
     </main>
 
