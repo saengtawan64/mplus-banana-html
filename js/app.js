@@ -24,7 +24,13 @@ export function renderNavigation() {
   const current = document.body.dataset.page;
   document.querySelectorAll(".top-nav").forEach((nav) => {
     nav.innerHTML = navItems
-      .map(([key, label, href]) => `<a href="${href}" ${key === current ? 'aria-current="page"' : ""}>${label}</a>`)
+      .map(
+        ([key, label, href]) =>
+          `<a class="nav-link" href="${href}" ${key === current ? 'aria-current="page"' : ""}>` +
+          `<span class="nav-link-dot" aria-hidden="true"></span>` +
+          `<span>${label}</span>` +
+          `</a>`,
+      )
       .join("");
   });
 }
@@ -36,7 +42,13 @@ function renderBottomNavigation() {
   nav.className = "bottom-nav";
   nav.setAttribute("aria-label", "เมนูหลักบนมือถือ");
   nav.innerHTML = bottomNavItems
-    .map(([key, label, href]) => `<a href="${href}" ${key === current ? 'aria-current="page"' : ""}>${label}</a>`)
+    .map(
+      ([key, label, href]) =>
+        `<a href="${href}" ${key === current ? 'aria-current="page"' : ""}>` +
+        `<span class="bottom-nav-icon" aria-hidden="true"></span>` +
+        `<span>${label}</span>` +
+        `</a>`,
+    )
     .join("");
   document.body.classList.add("has-bottom-nav");
   document.body.append(nav);
