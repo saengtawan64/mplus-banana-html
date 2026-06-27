@@ -330,3 +330,49 @@ No redeploy was performed because live behavior confirmed the approved daily tab
 - No CSV `ยอดรวม` validation yet.
 - No production financial reporting.
 - No official dashboard numbers from live CSV yet.
+
+## Parser Cleanup and CSV-Backed Daily Table Live Smoke Check
+
+Status: PASS  
+Scope: live smoke test only  
+Latest feature commit: `5c18459 fix: classify contextual structure rows safely`  
+Live URL tested: `https://mplus-banana-html.saengtawan64.workers.dev/dashboard.html`  
+Cloudflare normalized path: `/dashboard`
+
+Cloudflare Dashboard required sign-in, so no redeploy was performed. Live behavior confirmed the parser cleanup from `5c18459` was active.
+
+### Key Live Results
+
+- Dashboard loaded.
+- Desktop smoke: PASS.
+- Mobile smoke: PASS at about `390x844`.
+- CSV fetch succeeded.
+- Parser status: `ok`.
+- Draft rows: `360`.
+- Warnings: `0`.
+- Errors: `0`.
+- `#dailyTableDataSourceNote` showed:
+  `แหล่งข้อมูล: CSV ตรวจสอบแล้ว`
+- `#dailySalesRows tr` count was `360`.
+- `#liveCsvPreviewRows tr` count was `360`.
+- Daily table changed from sample rows to CSV-backed rows because the existing parser `ok` gate activated.
+- Hero/cards/charts were not replaced by parser rows.
+- No blocking console errors were observed.
+
+### Guardrails Confirmed
+
+- No files changed locally after smoke.
+- No stage/commit/push after smoke.
+- No rollback was performed.
+- No deploy/redeploy was performed because Cloudflare metadata required sign-in.
+- CSV `ยอดรวม` was not used as official total.
+- Finance/contract/profit values did not enter official sales.
+- Parser rows affected only the approved gated daily table behavior.
+- Hero/cards/charts remained outside parser replacement.
+
+### Still Not Approved
+
+- No hero/card/chart replacement yet.
+- No CSV `ยอดรวม` validation yet.
+- No production financial reporting beyond the approved CSV-backed daily table gate.
+- No finance/contract/profit inclusion in official sales.
