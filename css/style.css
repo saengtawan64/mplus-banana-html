@@ -922,6 +922,159 @@ h3 {
   padding-left: 1.2rem;
 }
 
+.export-workspace {
+  gap: var(--space-5);
+}
+
+.export-hero,
+.export-status-card,
+.export-control-panel,
+.export-message-panel,
+.export-helper-card,
+.export-guardrail-panel {
+  border: 1px solid rgba(205, 213, 225, 0.72);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.78)),
+    var(--surface-raised);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.export-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  gap: var(--space-4);
+  align-items: stretch;
+  min-height: 320px;
+  overflow: hidden;
+  padding: clamp(24px, 4vw, 42px);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 86% 16%, rgba(16, 185, 129, 0.16), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.99), rgba(239, 246, 255, 0.84) 60%, rgba(236, 253, 245, 0.72)),
+    var(--surface-raised);
+  box-shadow: var(--shadow-card);
+}
+
+.export-hero-copy {
+  display: grid;
+  align-content: center;
+  gap: var(--space-4);
+}
+
+.export-hero-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.export-hero-status span,
+.export-card-label {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 28px;
+  padding: 5px 10px;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  border-radius: var(--radius-pill);
+  background: rgba(236, 253, 245, 0.78);
+  color: var(--green);
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: center;
+  gap: var(--space-2);
+}
+
+.export-status-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) repeat(2, minmax(220px, 0.7fr));
+  gap: var(--space-3);
+  align-items: stretch;
+}
+
+.export-warning {
+  margin: 0;
+}
+
+.export-status-card,
+.export-helper-card {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  min-height: 150px;
+  padding: var(--space-4);
+}
+
+.export-status-card p,
+.export-helper-card p,
+.export-copy-note,
+.export-guardrail-panel li {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.export-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.export-message-panel {
+  display: grid;
+  gap: var(--space-4);
+  overflow: hidden;
+  padding: var(--space-5);
+}
+
+.export-preview-panel textarea {
+  min-height: 360px;
+  resize: vertical;
+}
+
+.export-control-panel {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+.export-control-panel .copy-action {
+  width: 100%;
+}
+
+.export-helper-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.export-guardrail-panel {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-color: rgba(250, 204, 21, 0.34);
+  background:
+    linear-gradient(180deg, rgba(255, 251, 235, 0.82), rgba(255, 255, 255, 0.86)),
+    var(--surface);
+}
+
+.export-guardrail-panel ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
 .action-row {
   display: flex;
   flex-wrap: wrap;
@@ -2209,6 +2362,10 @@ td:nth-child(5) {
   .compare-control-grid,
   .compare-summary-grid,
   .compare-analytics-grid,
+  .export-hero,
+  .export-status-strip,
+  .export-main-grid,
+  .export-helper-grid,
   .dashboard-topbar,
   .dashboard-status-strip,
   .dashboard-premium-layout,
@@ -2242,6 +2399,10 @@ td:nth-child(5) {
   }
 
   .compare-actions {
+    justify-content: flex-start;
+  }
+
+  .export-actions {
     justify-content: flex-start;
   }
 
@@ -2500,6 +2661,32 @@ td:nth-child(5) {
 
   .compare-chart-frame {
     height: 280px;
+  }
+
+  .export-workspace {
+    gap: var(--space-4);
+  }
+
+  .export-hero,
+  .export-message-panel,
+  .export-control-panel,
+  .export-helper-card,
+  .export-guardrail-panel,
+  .export-status-card {
+    padding: var(--space-4);
+  }
+
+  .export-hero {
+    min-height: 260px;
+    border-radius: 28px;
+  }
+
+  .export-hero h1 {
+    font-size: clamp(2.1rem, 11vw, 3.2rem);
+  }
+
+  .export-preview-panel textarea {
+    min-height: 320px;
   }
 
   .dashboard-status-strip {

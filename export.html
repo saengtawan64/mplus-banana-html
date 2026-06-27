@@ -12,34 +12,61 @@
       <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
-    <main class="page-shell app-main">
-      <section class="topbar-card app-toolbar premium-panel" aria-label="บริบทคัดลอกสรุป">
-        <div>
-          <h2>ข้อความพร้อมส่งต่อ</h2>
-          <p class="panel-kicker">คัดลอกข้อความสรุปเท่านั้น ไม่มีการสร้าง PDF หรือ Excel</p>
+    <main class="page-shell app-main export-workspace">
+      <section class="export-hero premium-panel" aria-label="พื้นที่คัดลอกสรุป">
+        <div class="export-hero-copy">
+          <p class="eyebrow">Export Copy Workspace</p>
+          <h1>คัดลอกสรุปสำหรับส่งต่อ</h1>
+          <p class="page-subtitle">
+            เตรียมข้อความตัวอย่างสำหรับคัดลอกไปส่งต่อเท่านั้น โดยไม่มีการสร้างไฟล์ PDF, Excel หรือดาวน์โหลดข้อมูล
+          </p>
+          <div class="export-hero-status" aria-label="สถานะการคัดลอกสรุป">
+            <span>Copy only</span>
+            <span>Sample data</span>
+            <span>No file export</span>
+          </div>
         </div>
-        <div class="topbar-meta">
-          <a class="button" href="dashboard.html">ยอดขาย</a>
+        <div class="export-actions" aria-label="ลิงก์ที่เกี่ยวข้อง">
+          <a class="button primary" href="dashboard.html">เปิด Dashboard</a>
           <a class="button" href="reports.html">รายงาน</a>
+          <a class="button" href="compare.html">เปรียบเทียบ</a>
         </div>
       </section>
 
-      <section class="page-heading app-page-header premium-panel">
-        <div>
-          <p class="eyebrow">คัดลอกสรุป</p>
-          <h1>คัดลอกสรุปเท่านั้น</h1>
-          <p class="page-subtitle">เตรียมข้อความสรุปสำหรับส่งต่อ หน้านี้ไม่สร้าง PDF หรือ Excel</p>
+      <section class="export-status-strip" aria-label="สถานะและข้อจำกัดการคัดลอกสรุป">
+        <div class="notice warn export-warning">
+          ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV หน้านี้คัดลอกข้อความเท่านั้น ไม่มี PDF, Excel หรือไฟล์ดาวน์โหลด
         </div>
+        <article class="export-status-card">
+          <span class="export-card-label">No file export</span>
+          <h2>ไม่มี PDF / Excel</h2>
+          <p>ปุ่มนี้คัดลอกข้อความเท่านั้น ไม่สร้างไฟล์และไม่ดาวน์โหลดข้อมูล</p>
+        </article>
+        <article class="export-status-card">
+          <span class="export-card-label">Sample only</span>
+          <h2>ยังไม่ใช่ข้อมูล production</h2>
+          <p>ข้อความใช้ข้อมูลตัวอย่างและยังไม่เชื่อม real CSV / live data</p>
+        </article>
       </section>
 
-      <div class="notice warn">
-        ข้อมูลตัวอย่างเท่านั้น ยังไม่ใช่ยอดขายจริงจาก CSV หน้านี้คัดลอกข้อความเท่านั้น ไม่มีการสร้าง PDF หรือ Excel
-      </div>
+      <section class="export-main-grid" aria-label="ข้อความสรุปและตัวเลือกการคัดลอก">
+        <article class="export-message-panel export-preview-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Message preview</p>
+              <h2>ตัวอย่างข้อความที่จะคัดลอก</h2>
+              <p class="panel-kicker">ข้อความสำหรับคัดลอกเท่านั้น ตัวเลขตัวอย่างยังไม่ใช่ยอดขายจริงจาก CSV</p>
+            </div>
+          </div>
+          <textarea id="summaryText" rows="14" readonly></textarea>
+        </article>
 
-      <section class="summary-layout">
-        <div class="summary-card">
-          <h2>รูปแบบข้อความ</h2>
-          <p class="panel-kicker">เลือกรูปแบบข้อความ แล้วคัดลอกสรุปสำหรับส่งต่อ</p>
+        <aside class="export-control-panel" aria-label="ตัวเลือกข้อความสรุป">
+          <div>
+            <p class="panel-kicker">Copy controls</p>
+            <h2>เลือกรูปแบบข้อความ</h2>
+            <p class="panel-kicker">เลือก template แล้วคัดลอกข้อความสรุปไปใช้งานต่อ</p>
+          </div>
           <label>รูปแบบสรุป
             <select id="summaryFormat">
               <option value="short">สั้น</option>
@@ -49,17 +76,49 @@
             </select>
           </label>
           <button class="button primary copy-action" id="copySummary" type="button">คัดลอกสรุป</button>
-        </div>
+          <p class="export-copy-note">คัดลอกไปยัง clipboard เท่านั้น ไม่มีการสร้างหรือดาวน์โหลดไฟล์</p>
+        </aside>
+      </section>
 
-        <section class="panel summary-preview">
-          <div class="panel-header">
-            <div>
-              <h2>ตัวอย่างข้อความที่จะคัดลอก</h2>
-              <p class="panel-kicker">ข้อความสำหรับคัดลอกเท่านั้น ตัวเลขตัวอย่างยังไม่ใช่ยอดขายจริงจาก CSV</p>
-            </div>
-          </div>
-          <textarea id="summaryText" rows="12" readonly></textarea>
-        </section>
+      <section class="export-helper-grid" aria-label="คำอธิบายการใช้งาน">
+        <article class="export-helper-card">
+          <span class="export-card-label">Copy only</span>
+          <h2>ส่งต่อด้วยข้อความ</h2>
+          <p>เหมาะสำหรับคัดลอกไปวางในแชตหรือสรุปภายใน ไม่ใช่รายงานไฟล์</p>
+        </article>
+        <article class="export-helper-card">
+          <span class="export-card-label">No PDF / Excel</span>
+          <h2>ไม่เพิ่ม export ไฟล์</h2>
+          <p>รอบนี้ไม่มี PDF, Excel, download หรือระบบจัดเก็บไฟล์</p>
+        </article>
+        <article class="export-helper-card">
+          <span class="export-card-label">Formula</span>
+          <h2>ยอดขายรวมตามสูตรหลัก</h2>
+          <p>totalSales = systemSales + outsideSystemSales</p>
+        </article>
+        <article class="export-helper-card">
+          <span class="export-card-label">Supporting</span>
+          <h2>ข้อมูลประกอบเท่านั้น</h2>
+          <p>Finance / contract / profit ไม่ถูกรวมในยอดขายหลัก</p>
+        </article>
+      </section>
+
+      <section class="export-guardrail-panel" aria-label="ข้อจำกัดและลิงก์ที่เกี่ยวข้อง">
+        <div>
+          <p class="panel-kicker">Prototype guardrails</p>
+          <h2>Export ยังเป็นพื้นที่คัดลอกข้อความตัวอย่าง</h2>
+        </div>
+        <ul>
+          <li>ไม่มีการเชื่อม real CSV หรือ live CSV URL ในหน้านี้</li>
+          <li>ไม่มี PDF, Excel, file download หรือระบบแชร์ production</li>
+          <li>CSV ยอดรวมยังเป็น cross-check เท่านั้น ไม่ใช่ official total</li>
+          <li>ไม่เพิ่ม parser, backend, API หรือ dependency ใหม่</li>
+        </ul>
+        <div class="export-actions">
+          <a class="button" href="dashboard.html">Dashboard</a>
+          <a class="button" href="reports.html">Reports</a>
+          <a class="button" href="compare.html">Compare</a>
+        </div>
       </section>
     </main>
 
