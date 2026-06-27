@@ -12,60 +12,130 @@
       <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
-    <main class="page-shell app-main">
-      <section class="hero-panel app-page-header premium-panel">
-        <div class="hero-content">
-          <p class="eyebrow">HTML Quick Version</p>
-          <h1>หน้าสรุปยอดขายสาขาแบบทดลอง</h1>
-          <p class="hero-copy">เว็บ static สำหรับดูภาพรวมยอดขาย ตรวจหัวคอลัมน์ CSV ดูสาขา และคัดลอกสรุปยอดขายแบบง่าย</p>
-          <div class="hero-stat-grid" aria-label="สถานะต้นแบบ">
-            <div class="hero-stat"><strong>เว็บ static</strong><span>ไม่มี backend หรือระบบ build</span></div>
-            <div class="hero-stat"><strong>เตรียมไว้สำหรับ CSV</strong><span>ยังไม่เชื่อม CSV จริง</span></div>
-            <div class="hero-stat"><strong>Role ปลอดภัย</strong><span>ใช้ role key ที่อนุมัติแล้วเท่านั้น</span></div>
+    <main class="page-shell app-main home-command-center">
+      <section class="home-command-top" aria-label="ศูนย์ควบคุมต้นแบบ">
+        <article class="home-hero-command premium-panel">
+          <p class="eyebrow">Branch Command Center</p>
+          <h1>ศูนย์ควบคุมยอดขายสาขาแบบ Prototype</h1>
+          <p class="hero-copy">
+            พื้นที่เริ่มต้นสำหรับตรวจภาพรวม Dashboard, รายงาน, เปรียบเทียบสาขา, เป้าระดับสาขา และความพร้อมของ CSV โดยยังคงเป็นข้อมูลตัวอย่างเท่านั้น
+          </p>
+          <div class="home-hero-status" aria-label="สถานะต้นแบบ">
+            <span>Sample data only</span>
+            <span>No backend / API</span>
+            <span>CSV preview not production</span>
           </div>
           <div class="quick-actions">
-            <a class="button primary" href="dashboard.html">ดูยอดขาย</a>
-            <a class="button" href="mapping.html">ตรวจหัวคอลัมน์ CSV</a>
+            <a class="button primary" href="dashboard.html">เปิด Dashboard</a>
+            <a class="button" href="mapping.html">ตรวจ CSV Mapping</a>
+            <a class="button" href="reports.html">ดูรายงาน</a>
           </div>
-        </div>
-        <div class="login-panel" aria-label="ตัวเลือกมุมมองทดลอง">
-          <h2>มุมมองทดลอง</h2>
-          <p class="panel-note">ตัวเลือกมุมมองทดลองเท่านั้น ไม่ใช่ระบบล็อกอินจริง และไม่ใช่ระบบกำหนดสิทธิ์จริง</p>
+        </article>
+
+        <aside class="home-context-panel" aria-label="บริบทการดูข้อมูลตัวอย่าง">
+          <p class="panel-kicker">มุมมองทดลอง</p>
+          <h2>เลือกบริบทก่อนดูต้นแบบ</h2>
+          <p class="panel-note">
+            ตัวเลือกนี้ใช้จำลองมุมมองเท่านั้น ไม่ใช่ระบบล็อกอินจริง ไม่ใช่การกำหนดสิทธิ์จริง และไม่ผูกกับข้อมูลขายจริง
+          </p>
           <label for="roleSelect">มุมมอง role ทดลอง</label>
           <select id="roleSelect"></select>
           <label for="branchSelect">สาขา</label>
           <select id="branchSelect"></select>
+          <div class="notice warn home-context-warning">
+            ข้อมูลตัวอย่างระดับสาขาเท่านั้น ยังไม่ใช่ระบบ production
+          </div>
+        </aside>
+      </section>
+
+      <section class="home-status-grid" aria-label="สถานะระบบต้นแบบ">
+        <article class="home-status-card">
+          <span class="home-card-label">สถานะข้อมูล</span>
+          <h2>Sample / Prototype</h2>
+          <p>ตัวเลขและหน้าจอใช้สำหรับตรวจ flow และทิศทาง UI เท่านั้น ยังไม่ใช่ยอดขายจริง</p>
+        </article>
+        <article class="home-status-card">
+          <span class="home-card-label">สถาปัตยกรรม</span>
+          <h2>Static App</h2>
+          <p>ไม่มี backend, API, Firebase write, package tooling หรือระบบ build เพิ่มในรอบนี้</p>
+        </article>
+        <article class="home-status-card">
+          <span class="home-card-label">CSV</span>
+          <h2>Preview / Readiness</h2>
+          <p>CSV ใช้เพื่อตรวจความพร้อมและ preview เท่านั้น การใช้เป็นข้อมูลจริงต้องได้รับอนุมัติแยก</p>
+        </article>
+      </section>
+
+      <section class="home-command-grid" aria-label="เวิร์กโฟลว์หลัก">
+        <a class="home-workflow-card featured" href="dashboard.html">
+          <span class="home-card-label">Primary Workspace</span>
+          <h2>Dashboard</h2>
+          <p>ดูภาพรวมยอดขาย ตัวอย่างรายวัน กราฟ และสถานะ CSV preview ในพื้นที่ทำงานหลัก</p>
+          <strong>เปิดภาพรวม</strong>
+        </a>
+        <a class="home-workflow-card" href="reports.html">
+          <span class="home-card-label">Reports</span>
+          <h2>รายงาน</h2>
+          <p>ตรวจตารางรายงานและสรุปตัวอย่างก่อนเชื่อมข้อมูลจริง</p>
+          <strong>ดูรายงาน</strong>
+        </a>
+        <a class="home-workflow-card" href="compare.html">
+          <span class="home-card-label">Compare</span>
+          <h2>เปรียบเทียบ</h2>
+          <p>ดูตัวอย่างการเปรียบเทียบสาขาและช่วงเวลา โดยยังไม่ใช้ข้อมูล production</p>
+          <strong>เปรียบเทียบ</strong>
+        </a>
+        <a class="home-workflow-card" href="staff-targets.html">
+          <span class="home-card-label">Branch Targets</span>
+          <h2>เป้าระดับสาขา</h2>
+          <p>ดูเป้าแบรนด์โฟกัสระดับสาขา ไม่ใช่ยอดขายรายบุคคลและไม่ใช่คอมมิชชั่น</p>
+          <strong>ตรวจเป้า</strong>
+        </a>
+      </section>
+
+      <section class="home-ops-grid" aria-label="เครื่องมือเตรียมงาน">
+        <a class="home-route-card" href="mapping.html">
+          <span class="home-card-label">CSV Readiness</span>
+          <h2>Mapping / CSV</h2>
+          <p>ตรวจหัวคอลัมน์และความพร้อมของโครงสร้าง CSV โดยไม่ใช้ CSV ยอดรวมเป็นยอดทางการ</p>
+        </a>
+        <a class="home-route-card" href="export.html">
+          <span class="home-card-label">Copy Summary</span>
+          <h2>คัดลอกสรุป</h2>
+          <p>เตรียมข้อความสรุปสำหรับคัดลอกเท่านั้น ไม่มี PDF หรือ Excel export</p>
+        </a>
+        <a class="home-route-card" href="branches.html">
+          <span class="home-card-label">Branch Setup</span>
+          <h2>สาขา</h2>
+          <p>ดูรายชื่อสาขาและสถานะการแสดงผลสำหรับ prototype</p>
+        </a>
+      </section>
+
+      <section class="home-next-actions" aria-label="ขั้นตอนถัดไปที่แนะนำ">
+        <div>
+          <p class="panel-kicker">Recommended next actions</p>
+          <h2>เริ่มตรวจจากงานที่สำคัญที่สุด</h2>
+        </div>
+        <div class="home-next-action-list">
+          <a href="dashboard.html">Review dashboard</a>
+          <a href="mapping.html">Check CSV mapping</a>
+          <a href="compare.html">Compare branches</a>
+          <a href="export.html">Copy summary</a>
         </div>
       </section>
 
-      <section class="status-grid" aria-label="ข้อจำกัดของโปรเจกต์">
-        <article class="status-card">
-          <h2>โปรเจกต์แยกเดี่ยว</h2>
-          <p>ไม่มี React, Vite, package file, Firebase writes หรือการพึ่งพาโปรเจกต์เก่า</p>
-        </article>
-        <article class="status-card">
-          <h2>เตรียมไว้สำหรับ CSV</h2>
-          <p>เมื่อได้รับลิงก์ Published CSV จริง ระบบจะตรวจจากหัวคอลัมน์ ไม่ใช้ตำแหน่งคอลัมน์ตายตัว</p>
-        </article>
-        <article class="status-card">
-          <h2>Role key คงเดิม</h2>
-          <p>ชื่อที่แสดงต้อง map กลับไปที่ CREATOR, OWNER, ADMIN, STAFF หรือ VIEWER เท่านั้น</p>
-        </article>
-      </section>
-
-      <section class="setup-grid" aria-label="ทางลัดสำหรับตั้งค่า">
-        <a class="setup-card" href="branches.html">
-          <h2>สาขา</h2>
-          <span>ดูชื่อสาขาภาษาไทยและสถานะการแสดงผล</span>
-        </a>
-        <a class="setup-card" href="compare.html">
-          <h2>เปรียบเทียบ</h2>
-          <span>ดูตัวอย่างกราฟเปรียบเทียบก่อนเชื่อม CSV จริง</span>
-        </a>
-        <a class="setup-card" href="export.html">
-          <h2>คัดลอกสรุป</h2>
-          <span>เตรียมข้อความสำหรับคัดลอกเท่านั้น ไม่มี PDF หรือ Excel</span>
-        </a>
+      <section class="home-guardrail-panel" aria-label="ข้อจำกัดสำคัญของต้นแบบ">
+        <div>
+          <p class="panel-kicker">Prototype guardrails</p>
+          <h2>ยังไม่ใช่ระบบ production</h2>
+        </div>
+        <ul>
+          <li>ข้อมูลทั้งหมดบนหน้า Home เป็นข้อมูลตัวอย่าง / prototype เท่านั้น</li>
+          <li>ไม่มี backend, API, Firebase, AI, Chat, Stock, PDF หรือ Excel export</li>
+          <li>ยังไม่เชื่อม CSV จริงเป็นแหล่งข้อมูลทางการ เว้นแต่ได้รับอนุมัติแยก</li>
+          <li>สูตรยอดขายหลักยังเป็น totalSales = systemSales + outsideSystemSales</li>
+          <li>Finance / contract / profit เป็นข้อมูลประกอบเท่านั้น ไม่รวมในยอดขายหลัก</li>
+        </ul>
       </section>
     </main>
 
