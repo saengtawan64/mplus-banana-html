@@ -272,3 +272,61 @@ No redeploy was performed. Cloudflare Dashboard commit metadata was not visible 
 - No CSV `ยอดรวม` validation yet.
 - No production financial reporting.
 - No official dashboard numbers from live CSV yet.
+
+## Daily Table Replacement Gate Live Smoke Check
+
+Status: PASS  
+Scope: live smoke test only  
+Expected feature commit: `d664e31 feat: gate csv daily table replacement`  
+Live URL tested: `https://mplus-banana-html.saengtawan64.workers.dev/dashboard.html`  
+Cloudflare normalized path: `/dashboard`
+
+No redeploy was performed because live behavior confirmed the approved daily table replacement gate was active.
+
+### Key Live Results
+
+- Dashboard loaded.
+- Sample/prototype warning remained visible.
+- Hero/cards/supporting metrics rendered.
+- Recent bars rendered: `6`.
+- Monthly chart/tabs rendered: `ยอดรวม`, `ในระบบ`, `นอกระบบ`.
+- CSV preview panel/table was visible.
+- Mobile smoke: PASS at about `390x844`.
+- Bottom nav was visible.
+- Preview table horizontal scroll worked.
+- No blocking console errors were observed.
+- CSV fetch succeeded.
+- Parser status: `warning`.
+- Draft rows: `361`.
+- Warnings: `2`.
+- Errors: `0`.
+
+### Gate-Specific Confirmations
+
+- `#dailyTableDataSourceNote` showed:
+  `แหล่งข้อมูล: CSV Preview / มีบางแถวต้องตรวจสอบ — ตาราง Dashboard ยังใช้ข้อมูลตัวอย่าง`
+- `#dailyTableDataSourceNote` did not say:
+  `แหล่งข้อมูล: CSV ตรวจสอบแล้ว`
+- `#dailySalesRows tr` count remained `8`.
+- `#liveCsvPreviewRows tr` count was `361`.
+- `#dailySalesRows` remained the original dashboard sample table.
+- Parser rows remained isolated under `#liveCsvPreviewRows`.
+- No parser rows replaced hero/cards/charts/original daily table.
+
+### Guardrails Confirmed
+
+- No file changes after smoke.
+- No new commit/push during smoke.
+- No deploy/redeploy during smoke.
+- No parser logic changes.
+- No dashboard data replacement while parser is `warning`.
+- No Firebase/Auth/backend/API.
+- No AI/Chat/Stock/PDF/Excel.
+
+### Still Not Approved
+
+- No hero/card/chart replacement yet.
+- No daily table replacement while parser is `warning`.
+- No CSV `ยอดรวม` validation yet.
+- No production financial reporting.
+- No official dashboard numbers from live CSV yet.
