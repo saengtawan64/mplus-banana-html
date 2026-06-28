@@ -535,8 +535,6 @@ export function detectContextualMapping(rows, options = {}) {
 }
 
 export function normalizeContextualRows(rows, mapping, options = {}) {
-  void options;
-
   const result = {
     status: PARSER_STATUS.OK,
     rows: [],
@@ -587,6 +585,14 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
       currentMonthContext = classification.monthMarker;
       classifiedRow.monthContext = currentMonthContext;
       result.monthMarkers.push(classifiedRow);
+
+      const monthMarkerDailyCandidate = createDailyCandidateFromMonthMarkerRow(
+        classifiedRow,
+        row,
+        mapping,
+        classificationMapping
+      );
+      if (monthMarkerDailyCandidate) result.dailyCandidates.push(monthMarkerDailyCandidate);
     } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.DAILY_CANDIDATE) {
       result.dailyCandidates.push(createDailyCandidateMetadata(classifiedRow, row, mapping));
     } else if (classification.rowType === CONTEXTUAL_ROW_TYPE.MONTHLY_SUMMARY) {
@@ -612,7 +618,7 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
   }
 
   result.salesPreviewSummary = createSalesPreviewReviewSummary(result.dailyCandidates);
-  result.rows = createNormalizedDailySalesRows(result.dailyCandidates);
+  result.rows = createNormalizedDailySalesRows(result.dailyCandidates, options);
   result.draftRowsSummary = createNormalizedDraftRowsReviewSummary(result.rows);
   result.totalSalesSummary = createTotalSalesReviewSummary(result.rows);
 
@@ -746,15 +752,50 @@ function isReadablePreviewValue(previewField) {
   return previewField?.status === ROW_STATUS.OK;
 }
 
-function createNormalizedDailySalesRows(dailyCandidates) {
-  return dailyCandidates.map((candidate) => createNormalizedDailySalesDraft(candidate));
+function createDailyCandidateFromMonthMarkerRow(classifiedRow, rawRow, mapping, classificationMapping = {}) {
+  const dayColumn = typeof classificationMapping.dayColumn === "number" ? classificationMapping.dayColumn : 1;
+  const dayResult = parseContextualDay(rawRow?.[dayColumn]);
+  if (dayResult.status !== ROW_STATUS.OK) return null;
+
+  return createDailyCandidateMetadata(
+    {
+      ...classifiedRow,
+      rowType: CONTEXTUAL_ROW_TYPE.DAILY_CANDIDATE,
+      dataState: DATA_STATE.ACTIVE,
+      day: dayResult.day,
+      warnings: [],
+      errors: [],
+    },
+    rawRow,
+    mapping
+  );
 }
 
-function createNormalizedDailySalesDraft(candidate) {
-  const systemSales = createDraftSalesValue(candidate.salesPreview?.systemSales);
-  const outsideSystemSales = createDraftSalesValue(candidate.salesPreview?.outsideSystemSales);
+function createNormalizedDailySalesRows(dailyCandidates, options = {}) {
+  return dailyCandidates.map((candidate) => createNormalizedDailySalesDraft(candidate, options));
+}
+
+function createNormalizedDailySalesDraft(candidate, options = {}) {
+  const initialSystemSales = createDraftSalesValue(candidate.salesPreview?.systemSales);
+  const initialOutsideSystemSales = createDraftSalesValue(candidate.salesPreview?.outsideSystemSales);
   const hasValidDay = typeof candidate.day === "number";
   const hasMonthContext = Boolean(candidate.monthContext);
+  const dateParts = hasValidDay && hasMonthContext
+    ? {
+      day: candidate.day,
+      month: candidate.monthContext.month,
+      buddhistYear: candidate.monthContext.buddhistYear,
+      gregorianYear: candidate.monthContext.gregorianYear,
+      sourceMonthLabel: candidate.monthContext.label,
+    }
+    : null;
+  const isFuturePlaceholder = isFuturePlaceholderZeroRow(candidate, dateParts, options);
+  const systemSales = isFuturePlaceholder
+    ? createNoDataDraftSalesValue(candidate.salesPreview?.systemSales)
+    : initialSystemSales;
+  const outsideSystemSales = isFuturePlaceholder
+    ? createNoDataDraftSalesValue(candidate.salesPreview?.outsideSystemSales)
+    : initialOutsideSystemSales;
   const warnings = [];
   const errors = [];
 
@@ -774,23 +815,17 @@ function createNormalizedDailySalesDraft(candidate) {
 
   const dataState = !hasValidDay || !hasMonthContext
     ? DATA_STATE.INVALID
-    : systemSales.dataState === DATA_STATE.ACTIVE && outsideSystemSales.dataState === DATA_STATE.ACTIVE
-      ? DATA_STATE.ACTIVE
-      : DATA_STATE.MISSING;
+    : isFuturePlaceholder
+      ? DATA_STATE.NO_DATA
+      : systemSales.dataState === DATA_STATE.ACTIVE && outsideSystemSales.dataState === DATA_STATE.ACTIVE
+        ? DATA_STATE.ACTIVE
+        : DATA_STATE.MISSING;
   const totalSales = createDraftTotalSales(systemSales, outsideSystemSales, dataState);
 
   return {
     reviewOnly: true,
     sourceRowNumber: candidate.sourceRowNumber,
-    dateParts: hasValidDay && hasMonthContext
-      ? {
-        day: candidate.day,
-        month: candidate.monthContext.month,
-        buddhistYear: candidate.monthContext.buddhistYear,
-        gregorianYear: candidate.monthContext.gregorianYear,
-        sourceMonthLabel: candidate.monthContext.label,
-      }
-      : null,
+    dateParts,
     date: null,
     dataState,
     systemSales,
@@ -810,7 +845,26 @@ function createDraftSalesValue(previewField) {
   };
 }
 
+function createNoDataDraftSalesValue(previewField) {
+  return {
+    value: null,
+    dataState: DATA_STATE.NO_DATA,
+    sourceColumn: typeof previewField?.column === "number" ? previewField.column : null,
+    status: ROW_STATUS.NO_DATA,
+  };
+}
+
 function createDraftTotalSales(systemSales, outsideSystemSales, rowDataState) {
+  if (rowDataState === DATA_STATE.NO_DATA) {
+    return {
+      value: null,
+      dataState: DATA_STATE.NO_DATA,
+      status: ROW_STATUS.NO_DATA,
+      formula: "systemSales + outsideSystemSales",
+      reviewOnly: true,
+    };
+  }
+
   const canCalculateTotal = rowDataState !== DATA_STATE.INVALID
     && systemSales.dataState === DATA_STATE.ACTIVE
     && outsideSystemSales.dataState === DATA_STATE.ACTIVE;
@@ -832,6 +886,47 @@ function createDraftTotalSales(systemSales, outsideSystemSales, rowDataState) {
     formula: "systemSales + outsideSystemSales",
     reviewOnly: true,
   };
+}
+
+function isFuturePlaceholderZeroRow(candidate, dateParts, options = {}) {
+  if (options.futurePlaceholderZeroPolicy !== "noData") return false;
+  if (!candidate || !dateParts) return false;
+
+  const currentDateKey = parseComparableDateKey(options.currentDate);
+  if (currentDateKey === null) return false;
+
+  const rowDateKey = dateParts.gregorianYear * 10000 + dateParts.month * 100 + dateParts.day;
+  if (rowDateKey <= currentDateKey) return false;
+
+  const requiredSales = [
+    candidate.salesPreview?.systemSales,
+    candidate.salesPreview?.outsideSystemSales,
+  ];
+  if (!requiredSales.every((field) => field?.status === ROW_STATUS.OK && field.value === 0)) return false;
+
+  const mappedColumns = [
+    candidate.mappingSnapshot?.systemSalesColumn,
+    candidate.mappingSnapshot?.outsideSystemSalesColumn,
+    candidate.mappingSnapshot?.deviceCountColumn,
+    candidate.mappingSnapshot?.financeAmountColumn,
+    candidate.mappingSnapshot?.contractCountColumn,
+    candidate.mappingSnapshot?.profitColumn,
+    candidate.mappingSnapshot?.csvTotalCrossCheckColumn,
+  ].filter((column) => typeof column === "number");
+
+  return mappedColumns.every((column) => {
+    const parsed = parseContextualNumber(candidate.rawRow?.[column]);
+    return parsed.status !== ROW_STATUS.OK || parsed.value === 0;
+  });
+}
+
+function parseComparableDateKey(value) {
+  if (typeof value !== "string") return null;
+  const match = value.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+
+  const [, year, month, day] = match;
+  return Number(year) * 10000 + Number(month) * 100 + Number(day);
 }
 
 function createNormalizedDraftRowsReviewSummary(rows) {
