@@ -1486,6 +1486,212 @@ body[data-page="compare"].app-shell-v2 .compare-guardrail-panel {
   padding-left: 1.2rem;
 }
 
+body[data-page="export"].app-shell-v2 {
+  background:
+    linear-gradient(180deg, #eaecf5 0%, #f4f6fb 48%, #eaecf5 100%),
+    var(--canvas);
+}
+
+body[data-page="export"].app-shell-v2 .export-workspace,
+body[data-page="mapping"].app-shell-v2 .mapping-workspace,
+body[data-page="branches"].app-shell-v2 .branches-workspace {
+  gap: var(--space-5);
+}
+
+body[data-page="export"].app-shell-v2 .export-hero {
+  position: relative;
+  min-height: 330px;
+  border-color: rgba(255, 255, 255, 0.22);
+  background:
+    linear-gradient(135deg, #24124d 0%, #4c1d95 52%, #7c3aed 100%);
+  color: #ffffff;
+}
+
+body[data-page="export"].app-shell-v2 .export-hero::before,
+body[data-page="mapping"].app-shell-v2 .app-page-header::before,
+body[data-page="branches"].app-shell-v2 .app-page-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 34%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06), transparent 64%);
+  pointer-events: none;
+}
+
+body[data-page="export"].app-shell-v2 .export-hero > *,
+body[data-page="mapping"].app-shell-v2 .app-page-header > *,
+body[data-page="branches"].app-shell-v2 .app-page-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-page="export"].app-shell-v2 .export-hero .eyebrow,
+body[data-page="export"].app-shell-v2 .export-hero .page-subtitle {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+body[data-page="export"].app-shell-v2 .export-hero h1 {
+  max-width: 760px;
+  color: #ffffff;
+  font-size: clamp(2.3rem, 4.8vw, 4.7rem);
+  line-height: 0.96;
+}
+
+body[data-page="export"].app-shell-v2 .export-hero-status span,
+body[data-page="export"].app-shell-v2 .export-card-label {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+body[data-page="export"].app-shell-v2 .export-hero .button {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+body[data-page="export"].app-shell-v2 .export-hero .button.primary {
+  border-color: rgba(245, 192, 24, 0.34);
+  background: linear-gradient(135deg, #f5c018, #c8860a);
+  color: #1a1d2e;
+}
+
+body[data-page="export"].app-shell-v2 .export-status-card,
+body[data-page="export"].app-shell-v2 .export-control-panel,
+body[data-page="export"].app-shell-v2 .export-message-panel,
+body[data-page="export"].app-shell-v2 .export-helper-card,
+body[data-page="export"].app-shell-v2 .export-guardrail-panel,
+body[data-page="mapping"].app-shell-v2 .topbar-card,
+body[data-page="mapping"].app-shell-v2 .mapping-status-note,
+body[data-page="mapping"].app-shell-v2 .mapping-readiness-panel,
+body[data-page="mapping"].app-shell-v2 .mapping-guardrail-panel,
+body[data-page="branches"].app-shell-v2 .topbar-card,
+body[data-page="branches"].app-shell-v2 .branches-list-panel,
+body[data-page="branches"].app-shell-v2 .branches-guardrail-panel {
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.9)),
+    var(--surface-raised);
+  box-shadow: 0 12px 28px rgba(20, 30, 100, 0.075);
+}
+
+body[data-page="export"].app-shell-v2 .export-status-strip {
+  grid-template-columns: minmax(0, 1.12fr) repeat(2, minmax(220px, 0.7fr));
+}
+
+body[data-page="export"].app-shell-v2 .export-preview-panel textarea {
+  border-color: rgba(124, 58, 237, 0.2);
+  border-radius: 22px;
+  background: #fbfaff;
+}
+
+body[data-page="mapping"].app-shell-v2 {
+  background:
+    linear-gradient(180deg, #eaecf5 0%, #f2fbf8 50%, #eaecf5 100%),
+    var(--canvas);
+}
+
+body[data-page="mapping"].app-shell-v2 .app-page-header,
+body[data-page="branches"].app-shell-v2 .app-page-header {
+  position: relative;
+  overflow: hidden;
+  min-height: 280px;
+  align-items: end;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 34px;
+  color: #ffffff;
+  box-shadow: var(--shadow-card);
+}
+
+body[data-page="mapping"].app-shell-v2 .app-page-header {
+  background: linear-gradient(135deg, #064e3b 0%, #047857 48%, #0891b2 100%);
+}
+
+body[data-page="branches"].app-shell-v2 .app-page-header {
+  background: linear-gradient(135deg, #083344 0%, #0e7490 50%, #14b8a6 100%);
+}
+
+body[data-page="mapping"].app-shell-v2 .app-page-header h1,
+body[data-page="branches"].app-shell-v2 .app-page-header h1 {
+  max-width: 760px;
+  color: #ffffff;
+  font-size: clamp(2.25rem, 4.6vw, 4.5rem);
+  line-height: 0.96;
+}
+
+body[data-page="mapping"].app-shell-v2 .app-page-header .eyebrow,
+body[data-page="mapping"].app-shell-v2 .app-page-header .page-subtitle,
+body[data-page="branches"].app-shell-v2 .app-page-header .eyebrow,
+body[data-page="branches"].app-shell-v2 .app-page-header .page-subtitle {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+body[data-page="mapping"].app-shell-v2 .topbar-card,
+body[data-page="branches"].app-shell-v2 .topbar-card {
+  border-color: rgba(224, 228, 240, 0.92);
+}
+
+body[data-page="mapping"].app-shell-v2 .mapping-status-note,
+body[data-page="mapping"].app-shell-v2 .mapping-readiness-panel,
+body[data-page="mapping"].app-shell-v2 .mapping-guardrail-panel,
+body[data-page="branches"].app-shell-v2 .branches-list-panel,
+body[data-page="branches"].app-shell-v2 .branches-guardrail-panel {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-5);
+}
+
+body[data-page="mapping"].app-shell-v2 .mapping-status-note::before,
+body[data-page="mapping"].app-shell-v2 .mapping-readiness-panel::before,
+body[data-page="mapping"].app-shell-v2 .mapping-guardrail-panel::before,
+body[data-page="branches"].app-shell-v2 .branches-list-panel::before,
+body[data-page="branches"].app-shell-v2 .branches-guardrail-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: linear-gradient(180deg, #059669, #0891b2);
+}
+
+body[data-page="branches"].app-shell-v2 .branches-list-panel::before,
+body[data-page="branches"].app-shell-v2 .branches-guardrail-panel::before {
+  background: linear-gradient(180deg, #0891b2, #14b8a6);
+}
+
+body[data-page="mapping"].app-shell-v2 .mapping-readiness-panel > *,
+body[data-page="mapping"].app-shell-v2 .mapping-guardrail-panel > *,
+body[data-page="branches"].app-shell-v2 .branches-list-panel > *,
+body[data-page="branches"].app-shell-v2 .branches-guardrail-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-page="mapping"].app-shell-v2 #mappingStatus,
+body[data-page="branches"].app-shell-v2 #branchList {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body[data-page="mapping"].app-shell-v2 #mappingStatus .list-item,
+body[data-page="branches"].app-shell-v2 #branchList .list-item {
+  align-items: center;
+  min-height: 72px;
+  border: 1px solid rgba(224, 228, 240, 0.88);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+body[data-page="mapping"].app-shell-v2 .mapping-guardrail-panel ul,
+body[data-page="branches"].app-shell-v2 .branches-guardrail-panel ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .action-row {
   display: flex;
   flex-wrap: wrap;
@@ -3742,5 +3948,46 @@ body[data-page="dashboard"].app-shell-v2 .dashboard-compact-actions {
   .list-item {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@media (max-width: 920px) {
+  body[data-page="export"].app-shell-v2 .export-hero,
+  body[data-page="export"].app-shell-v2 .export-status-strip,
+  body[data-page="export"].app-shell-v2 .export-main-grid,
+  body[data-page="export"].app-shell-v2 .export-helper-grid,
+  body[data-page="mapping"].app-shell-v2 #mappingStatus,
+  body[data-page="branches"].app-shell-v2 #branchList {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body[data-page="mapping"].app-shell-v2 .app-page-header,
+  body[data-page="branches"].app-shell-v2 .app-page-header {
+    min-height: 0;
+    padding: var(--space-5);
+  }
+}
+
+@media (max-width: 560px) {
+  body[data-page="export"].app-shell-v2 .export-hero,
+  body[data-page="mapping"].app-shell-v2 .app-page-header,
+  body[data-page="branches"].app-shell-v2 .app-page-header,
+  body[data-page="mapping"].app-shell-v2 .mapping-readiness-panel,
+  body[data-page="mapping"].app-shell-v2 .mapping-guardrail-panel,
+  body[data-page="branches"].app-shell-v2 .branches-list-panel,
+  body[data-page="branches"].app-shell-v2 .branches-guardrail-panel {
+    padding: var(--space-4);
+    border-radius: 22px;
+  }
+
+  body[data-page="export"].app-shell-v2 .export-hero h1,
+  body[data-page="mapping"].app-shell-v2 .app-page-header h1,
+  body[data-page="branches"].app-shell-v2 .app-page-header h1 {
+    font-size: clamp(2rem, 10vw, 3rem);
+    overflow-wrap: anywhere;
+  }
+
+  body[data-page="export"].app-shell-v2 .export-preview-panel textarea {
+    min-height: 300px;
   }
 }

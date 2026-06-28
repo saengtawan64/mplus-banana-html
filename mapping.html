@@ -6,14 +6,14 @@
     <title>จับคู่ CSV | Mplus Banana</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
-  <body class="app-shell" data-page="mapping">
+  <body class="app-shell app-shell-v2" data-page="mapping" data-shell="v2">
     <header class="app-header">
       <a class="brand" href="index.html">Mplus Banana</a>
       <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
-    <main class="page-shell app-main">
-      <section class="topbar-card app-toolbar premium-panel" aria-label="บริบทการจับคู่ CSV">
+    <main class="page-shell app-main mapping-workspace">
+      <section class="topbar-card app-toolbar app-page-header premium-panel" aria-label="บริบทการจับคู่ CSV">
         <div>
           <h2>ความพร้อมของหัวคอลัมน์ CSV</h2>
           <p class="panel-kicker">ตรวจหัวคอลัมน์ก่อนเสมอ และตั้งใจไม่ใช้ตำแหน่งคอลัมน์แบบตายตัว</p>
@@ -32,11 +32,11 @@
         </div>
       </section>
 
-      <div class="notice neutral">
+      <div class="notice neutral mapping-status-note">
         การจับคู่ใช้หัวคอลัมน์ CSV ที่ตรวจพบเท่านั้น ไม่ใช้ตำแหน่งคอลัมน์แบบตายตัว
       </div>
 
-      <section class="panel">
+      <section class="panel mapping-readiness-panel">
         <div class="panel-header">
           <div>
             <h2>สถานะการจับคู่</h2>
@@ -44,6 +44,18 @@
           </div>
         </div>
         <div id="mappingStatus" class="list-stack"></div>
+      </section>
+      <section class="mapping-guardrail-panel" aria-label="Mapping behavior guardrails">
+        <div>
+          <p class="panel-kicker">Prototype guardrails</p>
+          <h2>Mapping remains a readiness guide only</h2>
+        </div>
+        <ul>
+          <li>No parser, CSV loader, or live CSV behavior changes are added here.</li>
+          <li>CSV total is a validation cross-check only, not the official total.</li>
+          <li>Missing values stay separate from zero values.</li>
+          <li>Finance / contract / profit remain supporting metrics only.</li>
+        </ul>
       </section>
     </main>
 

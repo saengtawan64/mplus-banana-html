@@ -6,14 +6,14 @@
     <title>สาขา | Mplus Banana</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
-  <body class="app-shell" data-page="branches">
+  <body class="app-shell app-shell-v2" data-page="branches" data-shell="v2">
     <header class="app-header">
       <a class="brand" href="index.html">Mplus Banana</a>
       <nav class="top-nav" aria-label="เมนูหลัก"></nav>
     </header>
 
-    <main class="page-shell app-main">
-      <section class="topbar-card app-toolbar premium-panel" aria-label="บริบทสาขา">
+    <main class="page-shell app-main branches-workspace">
+      <section class="topbar-card app-toolbar app-page-header premium-panel" aria-label="บริบทสาขา">
         <div>
           <h2>ตั้งค่าการแสดงชื่อสาขา</h2>
           <p class="panel-kicker">ตัวอย่างการตั้งค่าสาขาเท่านั้น ยังไม่ได้เชื่อมลิงก์ CSV จริงใน Phase นี้</p>
@@ -32,7 +32,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel branches-list-panel">
         <div class="panel-header">
           <div>
             <h2>สาขาที่ตั้งค่าไว้</h2>
@@ -40,6 +40,18 @@
           </div>
         </div>
         <div id="branchList" class="list-stack"></div>
+      </section>
+      <section class="branches-guardrail-panel" aria-label="Branch behavior guardrails">
+        <div>
+          <p class="panel-kicker">Prototype guardrails</p>
+          <h2>Branches remain a display/readiness workspace</h2>
+        </div>
+        <ul>
+          <li>No backend, admin, Auth, Firebase, or API behavior is added.</li>
+          <li>No real CSV connection or live CSV URL is added.</li>
+          <li>Branch records here are not production operational controls.</li>
+          <li>Existing sample/prototype readiness wording remains visible.</li>
+        </ul>
       </section>
     </main>
 
