@@ -1508,8 +1508,8 @@ body[data-page="export"].app-shell-v2 .export-hero {
 }
 
 body[data-page="export"].app-shell-v2 .export-hero::before,
-body[data-page="mapping"].app-shell-v2 .app-page-header::before,
-body[data-page="branches"].app-shell-v2 .app-page-header::before {
+body[data-page="mapping"].app-shell-v2 .mapping-hero::before,
+body[data-page="branches"].app-shell-v2 .branches-hero::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -1520,8 +1520,8 @@ body[data-page="branches"].app-shell-v2 .app-page-header::before {
 }
 
 body[data-page="export"].app-shell-v2 .export-hero > *,
-body[data-page="mapping"].app-shell-v2 .app-page-header > *,
-body[data-page="branches"].app-shell-v2 .app-page-header > * {
+body[data-page="mapping"].app-shell-v2 .mapping-hero > *,
+body[data-page="branches"].app-shell-v2 .branches-hero > * {
   position: relative;
   z-index: 1;
 }
@@ -1592,8 +1592,8 @@ body[data-page="mapping"].app-shell-v2 {
     var(--canvas);
 }
 
-body[data-page="mapping"].app-shell-v2 .app-page-header,
-body[data-page="branches"].app-shell-v2 .app-page-header {
+body[data-page="mapping"].app-shell-v2 .mapping-hero,
+body[data-page="branches"].app-shell-v2 .branches-hero {
   position: relative;
   overflow: hidden;
   min-height: 280px;
@@ -1604,26 +1604,30 @@ body[data-page="branches"].app-shell-v2 .app-page-header {
   box-shadow: var(--shadow-card);
 }
 
-body[data-page="mapping"].app-shell-v2 .app-page-header {
+body[data-page="mapping"].app-shell-v2 .mapping-hero {
   background: linear-gradient(135deg, #064e3b 0%, #047857 48%, #0891b2 100%);
 }
 
-body[data-page="branches"].app-shell-v2 .app-page-header {
+body[data-page="branches"].app-shell-v2 .branches-hero {
   background: linear-gradient(135deg, #083344 0%, #0e7490 50%, #14b8a6 100%);
 }
 
-body[data-page="mapping"].app-shell-v2 .app-page-header h1,
-body[data-page="branches"].app-shell-v2 .app-page-header h1 {
+body[data-page="mapping"].app-shell-v2 .mapping-hero h1,
+body[data-page="mapping"].app-shell-v2 .mapping-hero h2,
+body[data-page="branches"].app-shell-v2 .branches-hero h1,
+body[data-page="branches"].app-shell-v2 .branches-hero h2 {
   max-width: 760px;
   color: #ffffff;
   font-size: clamp(2.25rem, 4.6vw, 4.5rem);
   line-height: 0.96;
 }
 
-body[data-page="mapping"].app-shell-v2 .app-page-header .eyebrow,
-body[data-page="mapping"].app-shell-v2 .app-page-header .page-subtitle,
-body[data-page="branches"].app-shell-v2 .app-page-header .eyebrow,
-body[data-page="branches"].app-shell-v2 .app-page-header .page-subtitle {
+body[data-page="mapping"].app-shell-v2 .mapping-hero .eyebrow,
+body[data-page="mapping"].app-shell-v2 .mapping-hero .page-subtitle,
+body[data-page="mapping"].app-shell-v2 .mapping-hero .panel-kicker,
+body[data-page="branches"].app-shell-v2 .branches-hero .eyebrow,
+body[data-page="branches"].app-shell-v2 .branches-hero .page-subtitle,
+body[data-page="branches"].app-shell-v2 .branches-hero .panel-kicker {
   color: rgba(255, 255, 255, 0.76);
 }
 
@@ -3961,8 +3965,8 @@ body[data-page="dashboard"].app-shell-v2 .dashboard-compact-actions {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  body[data-page="mapping"].app-shell-v2 .app-page-header,
-  body[data-page="branches"].app-shell-v2 .app-page-header {
+  body[data-page="mapping"].app-shell-v2 .mapping-hero,
+  body[data-page="branches"].app-shell-v2 .branches-hero {
     min-height: 0;
     padding: var(--space-5);
   }
@@ -3970,8 +3974,8 @@ body[data-page="dashboard"].app-shell-v2 .dashboard-compact-actions {
 
 @media (max-width: 560px) {
   body[data-page="export"].app-shell-v2 .export-hero,
-  body[data-page="mapping"].app-shell-v2 .app-page-header,
-  body[data-page="branches"].app-shell-v2 .app-page-header,
+  body[data-page="mapping"].app-shell-v2 .mapping-hero,
+  body[data-page="branches"].app-shell-v2 .branches-hero,
   body[data-page="mapping"].app-shell-v2 .mapping-readiness-panel,
   body[data-page="mapping"].app-shell-v2 .mapping-guardrail-panel,
   body[data-page="branches"].app-shell-v2 .branches-list-panel,
@@ -3981,8 +3985,10 @@ body[data-page="dashboard"].app-shell-v2 .dashboard-compact-actions {
   }
 
   body[data-page="export"].app-shell-v2 .export-hero h1,
-  body[data-page="mapping"].app-shell-v2 .app-page-header h1,
-  body[data-page="branches"].app-shell-v2 .app-page-header h1 {
+  body[data-page="mapping"].app-shell-v2 .mapping-hero h1,
+  body[data-page="mapping"].app-shell-v2 .mapping-hero h2,
+  body[data-page="branches"].app-shell-v2 .branches-hero h1,
+  body[data-page="branches"].app-shell-v2 .branches-hero h2 {
     font-size: clamp(2rem, 10vw, 3rem);
     overflow-wrap: anywhere;
   }
