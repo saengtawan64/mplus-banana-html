@@ -20,6 +20,8 @@ const bottomNavItems = [
   ["export", "สรุป", "export.html"],
 ];
 
+const shellNavItems = [["home", "Command Center", "index.html"], ...navItems];
+
 export function renderNavigation() {
   const current = document.body.dataset.page;
   document.querySelectorAll(".top-nav").forEach((nav) => {
@@ -52,6 +54,116 @@ function renderBottomNavigation() {
     .join("");
   document.body.classList.add("has-bottom-nav");
   document.body.append(nav);
+}
+
+function isShellV2Enabled() {
+  return document.body.dataset.shell === "v2" || document.body.classList.contains("app-shell-v2");
+}
+
+function navLinkClass(key, current, baseClass) {
+  return `${baseClass}${key === current ? " shell-active" : ""}`;
+}
+
+function renderShellNavLinks(baseClass) {
+  const current = document.body.dataset.page;
+  return shellNavItems
+    .map(
+      ([key, label, href]) =>
+        `<a class="${navLinkClass(key, current, baseClass)}" href="${href}" ${key === current ? 'aria-current="page"' : ""}>` +
+        `<span class="shell-nav-marker" aria-hidden="true"></span>` +
+        `<span>${label}</span>` +
+        `</a>`,
+    )
+    .join("");
+}
+
+function setMobileMenuOpen(button, overlay, isOpen) {
+  button.setAttribute("aria-expanded", String(isOpen));
+  button.classList.toggle("is-open", isOpen);
+  overlay.hidden = !isOpen;
+  overlay.classList.toggle("is-open", isOpen);
+  document.body.classList.toggle("mobile-menu-open", isOpen);
+}
+
+function renderAppShellV2() {
+  if (!isShellV2Enabled() || document.querySelector(".sidebar-shell")) return;
+
+  const sidebar = document.createElement("aside");
+  sidebar.className = "sidebar-shell";
+  sidebar.setAttribute("aria-label", "Premium App Shell navigation");
+  sidebar.innerHTML = `
+    <div class="sidebar-shell-header">
+      <a class="sidebar-brand" href="index.html">
+        <span class="sidebar-brand-mark" aria-hidden="true"></span>
+        <span>
+          <strong>Mplus Banana</strong>
+          <small>Light v2 pilot</small>
+        </span>
+      </a>
+      <div class="sidebar-context">
+        <span>Prototype workspace</span>
+        <strong>Sample data only</strong>
+      </div>
+    </div>
+    <nav class="sidebar-nav" aria-label="Premium workspace navigation">
+      <p class="sidebar-nav-section">Workspace</p>
+      ${renderShellNavLinks("sidebar-nav-link")}
+    </nav>
+    <div class="sidebar-shell-footer">
+      <span class="sidebar-status-dot" aria-hidden="true"></span>
+      <span>No backend / API</span>
+    </div>
+  `;
+
+  const mobileBar = document.createElement("div");
+  mobileBar.className = "mobile-shell-bar";
+  mobileBar.innerHTML = `
+    <a class="mobile-shell-brand" href="index.html">
+      <span class="mobile-shell-mark" aria-hidden="true"></span>
+      <span>Mplus Banana</span>
+    </a>
+    <button class="mobile-menu-button" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenuOverlay">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+  `;
+
+  const overlay = document.createElement("nav");
+  overlay.className = "mobile-menu-overlay";
+  overlay.id = "mobileMenuOverlay";
+  overlay.hidden = true;
+  overlay.setAttribute("aria-label", "Mobile workspace navigation");
+  overlay.innerHTML = `
+    <div class="mobile-menu-card">
+      <p class="sidebar-nav-section">Workspace</p>
+      ${renderShellNavLinks("mobile-menu-link")}
+      <div class="mobile-menu-note">Sample / prototype only. Current bottom nav remains available during transition.</div>
+    </div>
+  `;
+
+  document.body.prepend(overlay);
+  document.body.prepend(mobileBar);
+  document.body.prepend(sidebar);
+
+  const button = mobileBar.querySelector(".mobile-menu-button");
+  button.addEventListener("click", () => {
+    setMobileMenuOpen(button, overlay, button.getAttribute("aria-expanded") !== "true");
+  });
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target.closest("a")) setMobileMenuOpen(button, overlay, false);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (overlay.hidden) return;
+    if (overlay.contains(event.target) || button.contains(event.target)) return;
+    setMobileMenuOpen(button, overlay, false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setMobileMenuOpen(button, overlay, false);
+  });
 }
 
 export function populateBranchSelect(select, selectedBranchId = getSession().branchId) {
@@ -95,6 +207,7 @@ function bootMappingPreview() {
 }
 
 renderNavigation();
+renderAppShellV2();
 renderBottomNavigation();
 bootHomeControls();
 bootMappingPreview();
