@@ -6,7 +6,7 @@
     <title>เป้าสาขา | Mplus Banana</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
-  <body class="app-shell" data-page="staff-targets">
+  <body class="app-shell app-shell-v2" data-page="staff-targets" data-shell="v2">
     <header class="app-header">
       <a class="brand" href="index.html">Mplus Banana</a>
       <nav class="top-nav" aria-label="เมนูหลัก"></nav>
@@ -23,6 +23,24 @@
           <label>สาขา <select id="targetBranch"></select></label>
           <label>เดือน <input id="targetMonth" type="month"></label>
         </section>
+      </section>
+
+      <section class="staff-targets-guardrail-panel premium-panel" aria-label="ข้อควรระวังเป้าสาขา">
+        <article>
+          <span>Branch-level only</span>
+          <strong>ระดับสาขา / แบรนด์ / เดือน</strong>
+          <p>เป้านี้เป็นภาพรวมสาขาเท่านั้น ยังไม่ใช่ระบบจริง</p>
+        </article>
+        <article>
+          <span>No personal tracking</span>
+          <strong>ไม่ใช่ยอดขายรายบุคคล</strong>
+          <p>ไม่ใช่การติดตามพนักงานรายคน และไม่ใช่การจัดอันดับผลงาน</p>
+        </article>
+        <article>
+          <span>No HR / commission</span>
+          <strong>ไม่ใช่คอมมิชชั่น หรือ payroll</strong>
+          <p>ห้ามใช้เพื่อคำนวณค่าคอม ค่าจ้าง หรือระบบ HR จริง</p>
+        </article>
       </section>
 
       <div class="notice warn staff-targets-warning">
