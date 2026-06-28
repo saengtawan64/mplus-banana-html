@@ -36,6 +36,34 @@
         การจับคู่ใช้หัวคอลัมน์ CSV ที่ตรวจพบเท่านั้น ไม่ใช้ตำแหน่งคอลัมน์แบบตายตัว
       </div>
 
+      <section class="mapping-trust-panel" aria-label="ขอบเขตความพร้อม CSV">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">Readiness boundary</p>
+            <h2>Mapping is readiness-only</h2>
+            <p class="panel-kicker">หน้านี้อธิบายกฎการจับคู่และความพร้อมเท่านั้น ยังไม่มี production CSV import</p>
+          </div>
+        </div>
+        <div class="mapping-trust-grid">
+          <article class="mapping-trust-card">
+            <span>No production import</span>
+            <p>ยังไม่เปิดใช้งานการนำเข้า CSV สำหรับ production และไม่เพิ่ม live CSV URL ใหม่ในรอบนี้</p>
+          </article>
+          <article class="mapping-trust-card">
+            <span>Local guard checked</span>
+            <p>Parser มี local readiness guard 33/33 checks แต่ production integration ยังต้องอนุมัติแยก</p>
+          </article>
+          <article class="mapping-trust-card">
+            <span>Official formula</span>
+            <p>ยอดขายรวมทางการ = ยอดในระบบ + ยอดนอกระบบ / CSV ยอดรวมใช้ cross-check เท่านั้น</p>
+          </article>
+          <article class="mapping-trust-card">
+            <span>Missing is not zero</span>
+            <p>ค่าว่าง / - / — ต้องคงเป็น missing หรือ not applicable ไม่ใช่ 0</p>
+          </article>
+        </div>
+      </section>
+
       <section class="panel mapping-readiness-panel">
         <div class="panel-header">
           <div>

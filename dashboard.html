@@ -78,6 +78,29 @@
         </section>
       </section>
 
+      <section class="dashboard-trust-strip" aria-label="ขอบเขตความน่าเชื่อถือ CSV">
+        <article class="dashboard-trust-card">
+          <span>CSV boundary</span>
+          <h2>CSV preview affects daily table only.</h2>
+          <p>ตารางรายวันใช้ CSV ได้เฉพาะเมื่อ parser status เป็น ok ตาม gate เดิมเท่านั้น</p>
+        </article>
+        <article class="dashboard-trust-card">
+          <span>Sample areas</span>
+          <h2>Cards and charts remain prototype.</h2>
+          <p>Hero, KPI cards, recent bars, and monthly chart ยังเป็นข้อมูลตัวอย่างจนกว่าจะอนุมัติแยก</p>
+        </article>
+        <article class="dashboard-trust-card">
+          <span>Official total</span>
+          <h2>ยอดขายรวมทางการ = ยอดในระบบ + ยอดนอกระบบ</h2>
+          <p>ยอดรวมจาก CSV ใช้ตรวจสอบเท่านั้น ไม่ใช่ยอดขายทางการ</p>
+        </article>
+        <article class="dashboard-trust-card">
+          <span>Missing values</span>
+          <h2>ค่าว่าง / - / — ไม่ใช่ศูนย์</h2>
+          <p>No new live CSV URL was added. Missing remains separate from real 0.</p>
+        </article>
+      </section>
+
       <section class="dashboard-premium-layout" aria-label="สรุปยอดขายตัวอย่าง">
         <article class="metric-card dashboard-hero-card dashboard-hero-kpi" id="totalSalesCard"></article>
         <div class="dashboard-secondary-cards dashboard-kpi-side" id="salesBreakdownCards"></div>
