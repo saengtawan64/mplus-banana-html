@@ -1,7 +1,7 @@
 # CSV MVP Operating Checklist and Owner UAT Plan
 
 Status: controlled CSV MVP readiness plan  
-Latest baseline commit: `b1d4fa7 docs: clarify live csv preview boundary`  
+Latest baseline commit: `65dc7a3 docs: update mapping guard count`
 Scope: Dashboard daily-table CSV preview operation and Owner UAT  
 Production status: not production-ready
 

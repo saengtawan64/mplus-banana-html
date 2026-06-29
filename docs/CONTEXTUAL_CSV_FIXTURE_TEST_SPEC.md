@@ -8,6 +8,8 @@
 - No live CSV connection approved.
 - No parser implementation approved.
 
+> Historical note: this document was written before the current contextual parser readiness guard and daily-table-only preview gate were implemented. Current operating policy is documented in `DASHBOARD_CSV_DATA_SOURCE_POLICY.md` and `CSV_MVP_OPERATING_CHECKLIST_AND_UAT.md`.
+
 ## Current Confirmed Owner Decisions
 
 - `ยอดในระบบ > รวมยอด` = official `systemSales`.

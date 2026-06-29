@@ -11,6 +11,8 @@ App Shell v2 migration is complete for all primary routes in `mplus-banana-html`
 
 Dashboard Light v2 is accepted as the main visual standard. Home, Dashboard, Reports, Compare, Staff Targets, Export, Mapping, and Branches now use App Shell v2 with desktop sidebar navigation, mobile top bar/hamburger overlay, existing mobile bottom nav compatibility, and visible sample/prototype/readiness guardrails.
 
+Note: This App Shell v2 closure document records the visual/navigation shell closure. Controlled CSV MVP behavior was clarified afterward: the Dashboard daily table may be CSV-backed only when `Parser: ok`, while hero/cards/charts remain sample/prototype.
+
 ## Completed Routes
 
 - `/`

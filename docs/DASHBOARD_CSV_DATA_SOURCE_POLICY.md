@@ -3,9 +3,13 @@
 ## Current Status
 
 - Live CSV preview panel is deployed and smoke tested.
-- CSV output is still preview/debug only.
-- Dashboard sample data has not been replaced.
-- Latest policy basis: `9ff6aaf docs: record live csv preview smoke check`.
+- Controlled CSV MVP is active for Dashboard daily table only.
+- When live fetch succeeds and parser status is `ok`, `#dailySalesRows` may be replaced through the approved daily-table gate.
+- Dashboard hero/cards/charts remain sample/prototype and are not CSV-driven.
+- Fetch/parser failure restores the sample daily table.
+- CSV `ยอดรวม` remains diagnostic cross-check only, not official total.
+- Latest parser readiness guard: `52/52` checks passed.
+- Latest policy basis: `65dc7a3 docs: update mapping guard count`.
 
 ## Data Source States
 
@@ -15,11 +19,15 @@ The dashboard uses built-in sample/prototype data. This remains the default stat
 
 ### `csvPreview`
 
-The app can fetch CSV text and run the contextual parser, but the result is shown only as preview/debug information. This state must not replace dashboard cards, charts, or tables.
+The app can fetch CSV text and run the contextual parser. This state may render preview rows and status diagnostics. It must not replace hero/cards/charts. The daily table may become CSV-backed only through the separately approved `Parser: ok` daily-table gate.
+
+### `csvDailyTableReady`
+
+The CSV fetch succeeds, parser status is `ok`, required mappings are detected, and the approved daily-table gate activates. This state may replace only `#dailySalesRows` and update `#dailyTableDataSourceNote` to `แหล่งข้อมูล: CSV ตรวจสอบแล้ว`.
 
 ### `csvReady`
 
-The CSV fetch succeeds, parser output is acceptable, required mappings are detected, QA gates pass, and Owner/GPT-JPT explicitly approves replacing a specific dashboard area. This state enables controlled replacement only for the approved area.
+The CSV fetch succeeds, parser output is acceptable, required mappings are detected, QA gates pass, and Owner/GPT-JPT explicitly approves replacing a specific dashboard area beyond the current daily-table gate. This state enables controlled replacement only for the approved area.
 
 ### `csvBlocked`
 
@@ -83,9 +91,9 @@ Approved wording options:
 - Missing critical mapping -> keep sample dashboard.
 - Dashboard must never become blank because CSV failed.
 
-## QA Gates Before Replacement
+## QA Gates Before New Replacement
 
-Before any dashboard area uses CSV-backed data, confirm:
+Before any new dashboard area uses CSV-backed data beyond the approved daily table gate, confirm:
 
 - Live CSV fetch success.
 - Parser status acceptable.
@@ -104,9 +112,10 @@ Before any dashboard area uses CSV-backed data, confirm:
 
 ## Risk and Guardrails
 
-- No dashboard replacement in this policy step.
+- No dashboard replacement beyond the approved daily-table gate.
+- No hero/cards/charts replacement.
 - No parser logic change.
 - No deploy.
-- No official dashboard numbers from CSV yet.
+- No official dashboard summary numbers from CSV yet.
 - Hero card should not be first replacement target.
 - Sample/prototype warning must not disappear without approved replacement.

@@ -9,6 +9,8 @@
 - No live CSV connection approved.
 - Current flat CSV mapping remains unchanged.
 
+> Historical note: this document was written before the current contextual parser readiness guard and daily-table-only preview gate were implemented. Current operating policy is documented in `DASHBOARD_CSV_DATA_SOURCE_POLICY.md` and `CSV_MVP_OPERATING_CHECKLIST_AND_UAT.md`.
+
 ## Background
 
 The current `js/csv-mapping.js` supports flat one-row-header CSV files only. It expects the first CSV row to contain usable column headers and then maps those headers to approved canonical fields.
