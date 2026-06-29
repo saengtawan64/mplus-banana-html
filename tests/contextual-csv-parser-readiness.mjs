@@ -6,6 +6,7 @@ import {
   PARSER_STATUS,
   ROW_STATUS,
   parseContextualSalesCsv,
+  validateContextualTotals,
 } from "../js/contextual-csv-mapping.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -13,14 +14,9 @@ const fixturePath = resolve(__dirname, "fixtures/lansak-contextual-sample.csv");
 const fixtureCurrentDate = "2026-06-29";
 
 const checks = [];
-const warnings = [];
 
 function recordCheck(name, passed, detail = "") {
   checks.push({ name, passed: Boolean(passed), detail });
-}
-
-function recordWarning(name, detail = "") {
-  warnings.push({ name, detail });
 }
 
 function assertEqual(name, actual, expected) {
@@ -54,6 +50,7 @@ const normalized = result.normalized || {};
 const dailyCandidateSources = sourceNumbers(normalized.dailyCandidates);
 const excludedSources = sourceNumbers(normalized.excludedRows);
 const skippedSources = sourceNumbers(normalized.skippedRows);
+const csvTotalCrossCheckSummary = result.summaries?.csvTotalCrossCheckSummary || normalized.csvTotalCrossCheckSummary;
 
 recordCheck("fixture can be read", csvText.trim().length > 0, "fixture is empty");
 recordCheck(
@@ -151,11 +148,86 @@ recordCheck(
   "cross-check column was not detected"
 );
 
-if (typeof result.mapping?.columns?.csvTotalCrossCheckColumn === "number") {
-  recordWarning(
-    "CSV total cross-check validation is diagnostic only",
-    "validateContextualTotals is not part of this guard path; CSV ยอดรวม was not used as official total."
-  );
+recordCheck(
+  "CSV total cross-check summary is diagnostic only",
+  Boolean(csvTotalCrossCheckSummary?.reviewOnly && csvTotalCrossCheckSummary?.validationOnly),
+  "cross-check summary was missing or not review-only"
+);
+recordCheck(
+  "CSV total cross-check summary uses official formula",
+  csvTotalCrossCheckSummary?.formula === "systemSales + outsideSystemSales",
+  `formula was ${csvTotalCrossCheckSummary?.formula}`
+);
+recordCheck(
+  "CSV total cross-check has a matched row",
+  (csvTotalCrossCheckSummary?.matchCount || 0) >= 1,
+  `matchCount=${csvTotalCrossCheckSummary?.matchCount}`
+);
+recordCheck(
+  "CSV total cross-check has a mismatch review row",
+  (csvTotalCrossCheckSummary?.mismatchCount || 0) >= 1,
+  `mismatchCount=${csvTotalCrossCheckSummary?.mismatchCount}`
+);
+recordCheck(
+  "CSV total cross-check tracks missing CSV totals without blocking formula",
+  (csvTotalCrossCheckSummary?.missingCsvTotalCount || 0) >= 1,
+  `missingCsvTotalCount=${csvTotalCrossCheckSummary?.missingCsvTotalCount}`
+);
+recordCheck(
+  "CSV total mismatch is diagnostic warning only",
+  Boolean(csvTotalCrossCheckSummary?.warnings?.some((warning) => warning.code === ROW_STATUS.TOTAL_MISMATCH)),
+  "mismatch warning was not present in diagnostic summary"
+);
+recordCheck(
+  "CSV total mismatch does not change parser status",
+  result.status === PARSER_STATUS.OK,
+  `parser status was ${result.status}`
+);
+
+const directCrossCheck = validateContextualTotals(rows, {
+  dailyCandidates: normalized.dailyCandidates,
+});
+recordCheck(
+  "validateContextualTotals returns diagnostic summary",
+  Boolean(directCrossCheck?.reviewOnly && directCrossCheck?.validationOnly && Array.isArray(directCrossCheck.rows)),
+  "validateContextualTotals did not return review-only rows"
+);
+recordCheck(
+  "validateContextualTotals detects matching CSV total",
+  (directCrossCheck?.matchCount || 0) >= 1,
+  `matchCount=${directCrossCheck?.matchCount}`
+);
+recordCheck(
+  "validateContextualTotals detects mismatching CSV total",
+  (directCrossCheck?.mismatchCount || 0) >= 1,
+  `mismatchCount=${directCrossCheck?.mismatchCount}`
+);
+
+const mismatchCrossCheck = directCrossCheck?.rows?.find((row) => row.sourceRowNumber === mismatchDay?.sourceRowNumber);
+if (mismatchCrossCheck) {
+  assertEqual("CSV total mismatch row is marked totalMismatch", mismatchCrossCheck.status, ROW_STATUS.TOTAL_MISMATCH);
+  assertEqual("CSV total mismatch official total remains formula value", mismatchCrossCheck.officialTotal?.value, 150);
+  assertEqual("CSV total mismatch keeps CSV total separate", mismatchCrossCheck.csvTotal?.value, 999);
+  assertEqual("CSV total mismatch difference is diagnostic", mismatchCrossCheck.difference, 849);
+} else {
+  recordCheck("CSV total mismatch diagnostic row exists", false, "source row was not found in cross-check rows");
+}
+
+const missingCsvCrossCheck = directCrossCheck?.rows?.find((row) => row.sourceRowNumber === day2?.sourceRowNumber);
+if (missingCsvCrossCheck) {
+  assertEqual("missing CSV total does not block official total", missingCsvCrossCheck.officialTotal?.value, 1100);
+  assertEqual("missing CSV total diagnostic row is not a mismatch", missingCsvCrossCheck.status, ROW_STATUS.MISSING_REQUIRED_FIELD);
+  assertEqual("missing CSV total is missing, not zero", missingCsvCrossCheck.csvTotal?.dataState, DATA_STATE.MISSING);
+} else {
+  recordCheck("missing CSV total diagnostic row exists", false, "source row was not found in cross-check rows");
+}
+
+const dashCrossCheck = directCrossCheck?.rows?.find((row) => row.sourceRowNumber === dashMissingDay?.sourceRowNumber);
+if (dashCrossCheck) {
+  assertEqual("missing required values still block official total in diagnostic", dashCrossCheck.officialTotal?.status, ROW_STATUS.MISSING_REQUIRED_FIELD);
+  assertEqual("missing CSV total remains missing in diagnostic", dashCrossCheck.csvTotal?.dataState, DATA_STATE.MISSING);
+} else {
+  recordCheck("dash/missing diagnostic row exists", false, "source row was not found in cross-check rows");
 }
 
 const failed = checks.filter((check) => !check.passed);
@@ -170,10 +242,6 @@ console.log(`Checks: ${passed}/${checks.length} passed`);
 checks.forEach((check) => {
   const detail = !check.passed && check.detail ? ` | ${check.detail}` : "";
   console.log(`${check.passed ? "PASS" : "FAIL"} ${check.name}${detail}`);
-});
-
-warnings.forEach((warning) => {
-  console.log(`WARN ${warning.name}${warning.detail ? ` | ${warning.detail}` : ""}`);
 });
 
 if (failed.length > 0) {

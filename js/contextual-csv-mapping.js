@@ -44,6 +44,7 @@ export const THAI_MONTHS = Object.freeze({
 });
 
 export const DEFAULT_TOTAL_TOLERANCE = 1;
+export const OFFICIAL_TOTAL_FORMULA = "systemSales + outsideSystemSales";
 
 export const CONTEXTUAL_ROWS = Object.freeze({
   SECTION_HEADER_INDEX: 1,
@@ -137,6 +138,7 @@ export function parseContextualSalesCsv(rowsOrText, options = {}) {
       salesPreviewSummary: null,
       draftRowsSummary: null,
       totalSalesSummary: null,
+      csvTotalCrossCheckSummary: null,
     },
     warnings: [],
     errors: [],
@@ -197,6 +199,7 @@ export function parseContextualSalesCsv(rowsOrText, options = {}) {
       salesPreviewSummary: normalized.salesPreviewSummary,
       draftRowsSummary: normalized.draftRowsSummary,
       totalSalesSummary: normalized.totalSalesSummary,
+      csvTotalCrossCheckSummary: normalized.csvTotalCrossCheckSummary,
     },
     warnings: [...(textParseResult?.warnings || []), ...mapping.warnings, ...normalized.warnings],
     errors: [...(textParseResult?.errors || []), ...normalized.errors],
@@ -547,6 +550,7 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
     salesPreviewSummary: createSalesPreviewReviewSummary([]),
     draftRowsSummary: createNormalizedDraftRowsReviewSummary([]),
     totalSalesSummary: createTotalSalesReviewSummary([]),
+    csvTotalCrossCheckSummary: validateContextualTotals([]),
     warnings: [],
     errors: [],
   };
@@ -621,17 +625,177 @@ export function normalizeContextualRows(rows, mapping, options = {}) {
   result.rows = createNormalizedDailySalesRows(result.dailyCandidates, options);
   result.draftRowsSummary = createNormalizedDraftRowsReviewSummary(result.rows);
   result.totalSalesSummary = createTotalSalesReviewSummary(result.rows);
+  result.csvTotalCrossCheckSummary = validateContextualTotals(result.rows, {
+    dailyCandidates: result.dailyCandidates,
+    tolerance: options.csvTotalTolerance ?? options.totalTolerance,
+  });
 
   return result;
 }
 
 export function validateContextualTotals(rows, options = {}) {
-  void rows;
-  void options;
-
-  return skeletonStopResult({
+  const tolerance = typeof options.tolerance === "number" ? options.tolerance : DEFAULT_TOTAL_TOLERANCE;
+  const summary = {
+    status: PARSER_STATUS.OK,
+    reviewOnly: true,
+    validationOnly: true,
+    formula: OFFICIAL_TOTAL_FORMULA,
+    tolerance,
     rows: [],
+    rowCount: Array.isArray(rows) ? rows.length : 0,
+    checkedCount: 0,
+    matchCount: 0,
+    mismatchCount: 0,
+    missingCsvTotalCount: 0,
+    missingOfficialTotalCount: 0,
+    noDataCount: 0,
+    warnings: [],
+    errors: [],
+  };
+
+  if (!Array.isArray(rows)) {
+    return {
+      ...summary,
+      status: PARSER_STATUS.STOP,
+      errors: [
+        {
+          code: ROW_STATUS.UNSUPPORTED_STRUCTURE,
+          message: "Contextual total validation rows must be an array.",
+        },
+      ],
+    };
+  }
+
+  const candidatesBySourceRow = new Map(
+    (Array.isArray(options.dailyCandidates) ? options.dailyCandidates : [])
+      .filter((candidate) => typeof candidate?.sourceRowNumber === "number")
+      .map((candidate) => [candidate.sourceRowNumber, candidate])
+  );
+
+  rows.forEach((row) => {
+    const candidate = candidatesBySourceRow.get(row?.sourceRowNumber);
+    const csvTotal = createCsvTotalCrossCheckValue(candidate);
+    const officialTotal = createOfficialTotalCrossCheckValue(row);
+    const diagnosticRow = createCsvTotalCrossCheckRow(row, csvTotal, officialTotal, tolerance);
+
+    summary.rows.push(diagnosticRow);
+
+    if (diagnosticRow.status === ROW_STATUS.OK) {
+      summary.checkedCount += 1;
+      summary.matchCount += 1;
+    } else if (diagnosticRow.status === ROW_STATUS.TOTAL_MISMATCH) {
+      summary.checkedCount += 1;
+      summary.mismatchCount += 1;
+      summary.warnings.push({
+        code: ROW_STATUS.TOTAL_MISMATCH,
+        sourceRowNumber: diagnosticRow.sourceRowNumber,
+        message: "CSV total differs from official formula total; CSV total remains cross-check only.",
+        difference: diagnosticRow.difference,
+      });
+    } else if (diagnosticRow.status === ROW_STATUS.NO_DATA) {
+      summary.noDataCount += 1;
+    }
+
+    if (csvTotal.dataState !== DATA_STATE.ACTIVE) summary.missingCsvTotalCount += 1;
+    if (officialTotal.status !== ROW_STATUS.OK) summary.missingOfficialTotalCount += 1;
   });
+
+  if (summary.mismatchCount > 0) summary.status = PARSER_STATUS.WARNING;
+
+  return summary;
+}
+
+function createCsvTotalCrossCheckValue(candidate) {
+  const column = candidate?.mappingSnapshot?.csvTotalCrossCheckColumn;
+  if (!candidate || typeof column !== "number") {
+    return {
+      value: null,
+      dataState: DATA_STATE.MISSING,
+      status: ROW_STATUS.MISSING_REQUIRED_FIELD,
+      sourceColumn: null,
+      validationOnly: true,
+    };
+  }
+
+  const parsed = parseContextualNumber(candidate.rawRow?.[column]);
+  return {
+    value: parsed.status === ROW_STATUS.OK ? parsed.value : null,
+    dataState: parsed.status === ROW_STATUS.OK ? DATA_STATE.ACTIVE : DATA_STATE.MISSING,
+    status: parsed.status,
+    sourceColumn: column,
+    validationOnly: true,
+  };
+}
+
+function createOfficialTotalCrossCheckValue(row = {}) {
+  return {
+    value: row.totalSales?.value ?? null,
+    dataState: row.totalSales?.dataState || DATA_STATE.MISSING,
+    status: row.totalSales?.status || ROW_STATUS.MISSING_REQUIRED_FIELD,
+    formula: row.totalSales?.formula || OFFICIAL_TOTAL_FORMULA,
+    reviewOnly: true,
+  };
+}
+
+function createCsvTotalCrossCheckRow(row = {}, csvTotal, officialTotal, tolerance) {
+  const base = {
+    reviewOnly: true,
+    validationOnly: true,
+    sourceRowNumber: row.sourceRowNumber ?? null,
+    csvTotal,
+    officialTotal,
+    difference: null,
+    tolerance,
+    status: ROW_STATUS.MISSING_REQUIRED_FIELD,
+    severity: "info",
+    message: "CSV total cross-check is diagnostic only.",
+  };
+
+  if (row.dataState === DATA_STATE.NO_DATA || officialTotal.status === ROW_STATUS.NO_DATA) {
+    return {
+      ...base,
+      status: ROW_STATUS.NO_DATA,
+      severity: "info",
+      message: "No-data row is excluded from confirmed CSV total comparison.",
+    };
+  }
+
+  if (officialTotal.status !== ROW_STATUS.OK) {
+    return {
+      ...base,
+      status: ROW_STATUS.MISSING_REQUIRED_FIELD,
+      severity: "info",
+      message: "Official formula total is not readable, so CSV total is not compared.",
+    };
+  }
+
+  if (csvTotal.status !== ROW_STATUS.OK) {
+    return {
+      ...base,
+      status: ROW_STATUS.MISSING_REQUIRED_FIELD,
+      severity: "info",
+      message: "CSV total is missing; official formula total remains unchanged.",
+    };
+  }
+
+  const difference = csvTotal.value - officialTotal.value;
+  if (Math.abs(difference) <= tolerance) {
+    return {
+      ...base,
+      difference,
+      status: ROW_STATUS.OK,
+      severity: "info",
+      message: "CSV total matches official formula total within tolerance.",
+    };
+  }
+
+  return {
+    ...base,
+    difference,
+    status: ROW_STATUS.TOTAL_MISMATCH,
+    severity: "warning",
+    message: "CSV total differs from official formula total; CSV total remains cross-check only.",
+  };
 }
 
 function parseContextualNumber(value, context = {}) {
