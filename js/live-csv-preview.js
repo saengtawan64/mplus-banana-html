@@ -2,17 +2,38 @@ import { parseContextualSalesCsv } from "./contextual-csv-mapping.js";
 
 const LIVE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vScmRS5VCtLON--xd_4FnRvUAV8pASPi8bPOq57jYStFzh0C97JtaisyOLjoGyIecYXhyIDceK4-7Jh/pub?gid=614260076&single=true&output=csv";
 
-const statusText = {
-  loading: "กำลังตรวจ CSV แบบ read-only...",
-  success: "อ่าน CSV ได้แล้ว แต่ยังเป็น Preview เท่านั้น ยังไม่แทน Dashboard",
-  stop: "อ่าน CSV ได้ แต่โครงสร้างยังไม่พร้อมใช้งาน",
-  failed: "ไม่สามารถโหลด CSV ได้ กำลังแสดง Dashboard ตัวอย่างเหมือนเดิม",
+const statusMeta = {
+  loading: {
+    title: "สถานะ CSV: กำลังตรวจ",
+    description: "กำลังตรวจ CSV แบบ read-only...",
+    tone: "neutral",
+  },
+  success: {
+    title: "สถานะ CSV: ใช้งานได้",
+    description: "ตารางรายวัน: ใช้ข้อมูล CSV ตรวจสอบแล้ว",
+    tone: "success",
+  },
+  stop: {
+    title: "สถานะ CSV: ต้องตรวจสอบ",
+    description: "อ่าน CSV ได้ แต่โครงสร้างยังไม่พร้อมใช้งาน",
+    tone: "warning",
+  },
+  failed: {
+    title: "สถานะ CSV: โหลดไม่สำเร็จ",
+    description: "ตารางรายวัน: แสดงข้อมูลตัวอย่างแทน",
+    tone: "failed",
+  },
 };
 
-const fallbackNote = "Dashboard hero/cards/charts ยังใช้ข้อมูลตัวอย่าง | CSV preview ไม่แทน hero/cards/charts | ตารางรายวันใช้ CSV เฉพาะเมื่อ Parser: ok; ถ้าโหลดหรือ parse ไม่ผ่านจะกลับไปใช้ข้อมูลตัวอย่าง";
-const dailyTableFallbackText = "กำลังแสดงตาราง Dashboard ตัวอย่างเหมือนเดิม";
-const dailyTableCsvReadyText = "แหล่งข้อมูล: CSV ตรวจสอบแล้ว";
-const dailyTableCsvWarningText = "แหล่งข้อมูล: CSV Preview / มีบางแถวต้องตรวจสอบ — ตาราง Dashboard ยังใช้ข้อมูลตัวอย่าง";
+const boundaryNotes = [
+  "CSV ใช้เฉพาะตารางรายวันเมื่อ Parser: ok",
+  "CSV ยอดรวมใช้ตรวจสอบเท่านั้น ไม่ใช่ยอดรวมทางการ",
+  "ยอดรวมทางการ = ยอดในระบบ + ยอดนอกระบบ",
+  "การ์ด/กราฟยังเป็นข้อมูลตัวอย่าง",
+];
+const dailyTableFallbackText = "ตารางรายวัน: แสดงข้อมูลตัวอย่างแทน";
+const dailyTableCsvReadyText = "ตารางรายวัน: ใช้ข้อมูล CSV ตรวจสอบแล้ว";
+const dailyTableCsvWarningText = "ตารางรายวัน: แสดงข้อมูลตัวอย่างแทน / CSV Preview มีบางแถวต้องตรวจสอบ";
 
 let originalDailyTableHtml = null;
 let dailyTableWasReplaced = false;
@@ -26,24 +47,58 @@ function getPreviewElements() {
   };
 }
 
+function appendTextElement(parent, tagName, className, text) {
+  const element = document.createElement(tagName);
+  if (className) element.className = className;
+  element.textContent = text;
+  parent.appendChild(element);
+  return element;
+}
+
+function getDailyTableRowCount() {
+  const { rows } = getDailyTableElements();
+  return rows ? rows.querySelectorAll("tr").length : 0;
+}
+
+function renderDiagnosticChip(parent, label, value, modifier = "") {
+  const chip = appendTextElement(parent, "span", `dashboard-csv-chip${modifier ? ` ${modifier}` : ""}`, "");
+  appendTextElement(chip, "span", "dashboard-csv-chip-label", label);
+  appendTextElement(chip, "strong", "dashboard-csv-chip-value", String(value));
+}
+
 function renderPreviewStatus(state, details = {}) {
   const { status } = getPreviewElements();
   if (!status) return;
 
-  const lines = [
-    statusText[state] || statusText.failed,
-    "สถานะ: Preview เท่านั้น",
-    fallbackNote,
-  ];
+  const meta = statusMeta[state] || statusMeta.failed;
+  const dailyRowCount = getDailyTableRowCount();
+  const parserStatus = details.parserStatus || (state === "failed" ? "ไม่ได้ตรวจ" : "-");
+  const draftRows = typeof details.draftRowCount === "number" ? details.draftRowCount : "-";
+  const warnings = typeof details.warningCount === "number" ? details.warningCount : "-";
+  const errors = typeof details.errorCount === "number" ? details.errorCount : "-";
 
-  if (details.fetchStatus) lines.push(`Fetch: ${details.fetchStatus}`);
-  if (details.parserStatus) lines.push(`Parser: ${details.parserStatus}`);
-  if (typeof details.draftRowCount === "number") lines.push(`Draft rows: ${details.draftRowCount}`);
-  if (typeof details.warningCount === "number") lines.push(`Warnings: ${details.warningCount}`);
-  if (typeof details.errorCount === "number") lines.push(`Errors: ${details.errorCount}`);
-  if (details.checkedAt) lines.push(`ตรวจล่าสุด: ${details.checkedAt}`);
+  status.classList.remove("is-neutral", "is-success", "is-warning", "is-failed");
+  status.classList.add(`is-${meta.tone}`);
+  status.textContent = "";
 
-  status.textContent = lines.join(" | ");
+  const wrapper = appendTextElement(status, "div", "dashboard-csv-diagnostics", "");
+  const header = appendTextElement(wrapper, "div", "dashboard-csv-diagnostics-header", "");
+  appendTextElement(header, "strong", "dashboard-csv-state", meta.title);
+  appendTextElement(header, "span", "dashboard-csv-state-copy", meta.description);
+
+  const grid = appendTextElement(wrapper, "div", "dashboard-csv-chip-grid", "");
+  renderDiagnosticChip(grid, "Fetch", details.fetchStatus || "checking", details.fetchStatus === "success" ? "is-good" : "");
+  renderDiagnosticChip(grid, "Parser", parserStatus, parserStatus === "ok" ? "is-good" : "");
+  renderDiagnosticChip(grid, "จำนวนแถว CSV", draftRows);
+  renderDiagnosticChip(grid, "ตารางรายวัน", `${dailyRowCount} แถว`);
+  renderDiagnosticChip(grid, "Warnings", warnings, warnings === 0 ? "is-good" : "");
+  renderDiagnosticChip(grid, "Errors", errors, errors === 0 ? "is-good" : "");
+  if (details.checkedAt) renderDiagnosticChip(grid, "ตรวจล่าสุด", details.checkedAt);
+
+  const boundary = appendTextElement(wrapper, "div", "dashboard-csv-boundary", "");
+  boundaryNotes.forEach((note) => {
+    appendTextElement(boundary, "span", "dashboard-csv-boundary-item", note);
+  });
 }
 
 function clearPreviewTable() {
@@ -115,9 +170,13 @@ function getDailyTableElements() {
   };
 }
 
-function setDailyTableNote(message) {
+function setDailyTableNote(message, options = {}) {
   const { note } = getDailyTableElements();
-  if (note) note.textContent = message;
+  if (!note) return;
+
+  const rowCount = typeof options.rowCount === "number" ? options.rowCount : getDailyTableRowCount();
+  const rowLabel = options.rowLabel || "จำนวนแถว";
+  note.textContent = `${message} | ${rowLabel}: ${rowCount}`;
 }
 
 function captureOriginalDailyTableHtml() {
@@ -132,7 +191,7 @@ function restoreSampleDailyTable(noteText = dailyTableFallbackText) {
     rows.innerHTML = originalDailyTableHtml;
   }
   dailyTableWasReplaced = false;
-  setDailyTableNote(noteText);
+  setDailyTableNote(noteText, { rowLabel: "จำนวนแถวตัวอย่าง" });
 }
 
 function getDailyTableStatusLabel(row) {
@@ -170,7 +229,10 @@ function renderCsvBackedDailyTable(result) {
   });
 
   dailyTableWasReplaced = true;
-  setDailyTableNote(dailyTableCsvReadyText);
+  setDailyTableNote(dailyTableCsvReadyText, {
+    rowCount: result.rows.length,
+    rowLabel: "จำนวนแถว CSV",
+  });
   return true;
 }
 
