@@ -9,7 +9,7 @@ const statusText = {
   failed: "ไม่สามารถโหลด CSV ได้ กำลังแสดง Dashboard ตัวอย่างเหมือนเดิม",
 };
 
-const fallbackNote = "Dashboard cards/charts/tables ยังใช้ข้อมูลตัวอย่างเดิม";
+const fallbackNote = "Dashboard hero/cards/charts ยังใช้ข้อมูลตัวอย่าง | CSV preview ไม่แทน hero/cards/charts | ตารางรายวันใช้ CSV เฉพาะเมื่อ Parser: ok; ถ้าโหลดหรือ parse ไม่ผ่านจะกลับไปใช้ข้อมูลตัวอย่าง";
 const dailyTableFallbackText = "กำลังแสดงตาราง Dashboard ตัวอย่างเหมือนเดิม";
 const dailyTableCsvReadyText = "แหล่งข้อมูล: CSV ตรวจสอบแล้ว";
 const dailyTableCsvWarningText = "แหล่งข้อมูล: CSV Preview / มีบางแถวต้องตรวจสอบ — ตาราง Dashboard ยังใช้ข้อมูลตัวอย่าง";
